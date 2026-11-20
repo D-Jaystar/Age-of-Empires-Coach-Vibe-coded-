@@ -1,0 +1,719 @@
+{
+  "Armenians": {
+    "focus": "Infantry and Naval",
+    "bonuses": [
+      "Can build Mule Carts instead of Lumber/Mining camps (cost -25% wood)",
+      "Can build Fortified Churches in Castle Age (acts as a mini-Castle that shoots arrows and trains units)",
+      "Militia-line and Spearmen get free upgrades one age earlier (Spearmen upgrade in Dark Age, Pikeman in Feudal, Halberdier in Castle)",
+      "Warrior Monks can fight and carry Relics"
+    ],
+    "unique_units": ["Composite Bowman", "Warrior Monk"],
+    "unique_techs": {
+      "castle": "Cilician Fleet (+1 range for Galley line, Dromons, and demolition ships)",
+      "imperial": "Fereters (Infantry +30 HP, Warrior Monks +100% healing speed)"
+    },
+    "team_bonus": "Infantry +2 Line of Sight",
+    "tech_restrictions": "NO Paladin (Cavalier is max); NO Hussar; NO Arbalester; NO Siege Ram"
+  },
+  "Aztecs": {
+    "focus": "Infantry and Monks",
+    "bonuses": [
+      "Start with +50 gold",
+      "Villagers carry +3 extra resources",
+      "Military units are trained 11% faster",
+      "Monks gain +5 HP for each researched Monastery technology",
+      "Loom is free automatically"
+    ],
+    "unique_units": ["Jaguar Warrior"],
+    "unique_techs": {
+      "castle": "Atlatl (Skirmishers get +1 attack and +1 range)",
+      "imperial": "Garland Wars (Infantry get +4 attack)"
+    },
+    "team_bonus": "Relics generate +33% more gold",
+    "tech_restrictions": "NO Cavalry / Stables; NO Gunpowder; NO Thumb Ring; NO Ring Archer Armor"
+  },
+  "Bengalis": {
+    "focus": "Elephant and Naval",
+    "bonuses": [
+      "Receive +2 villagers upon advancing to the next Age",
+      "Ships regenerate 15 HP per minute",
+      "Elephant units take 25% less bonus damage and are 20% more resistant to conversion",
+      "Town Centers cost -50 wood"
+    ],
+    "unique_units": ["Ratha (chariot switching between melee and ranged)"],
+    "unique_techs": {
+      "castle": "Paiks (Rathas and Elephant units attack 20% faster)",
+      "imperial": "Mahayana (Villagers take 10% less population space)"
+    },
+    "team_bonus": "Trade units generate 10% food in addition to gold",
+    "tech_restrictions": "NO Knights / Cavalier / Paladin; NO Thumb Ring; NO Bombard Cannon"
+  },
+  "Berbers": {
+    "focus": "Cavalry and Naval",
+    "bonuses": [
+      "Villagers move 10% faster",
+      "Stable units cost -15% in Castle Age and -20% in Imperial Age",
+      "Ships move 10% faster"
+    ],
+    "unique_units": ["Camel Archer", "Genitour"],
+    "unique_techs": {
+      "castle": "Kasbah (Team Castles work 25% faster)",
+      "imperial": "Maghrebi Camels (Camel units regenerate HP)"
+    },
+    "team_bonus": "Genitour available in Archery Ranges starting in Castle Age",
+    "tech_restrictions": "NO Paladin (Cavalier is max); NO Arbalester; NO Halberdier; NO Siege Onager"
+  },
+  "Bohemians": {
+    "focus": "Gunpowder and Monks",
+    "bonuses": [
+      "Mining Camp technologies are free automatically",
+      "Monasteries and Universities cost -100 wood",
+      "Chemistry and Hand Cannoneers available in Castle Age",
+      "Spearman-line deals +25% bonus damage"
+    ],
+    "unique_units": ["Hussite Wagon", "Houfnice"],
+    "unique_techs": {
+      "castle": "Wagenburg Tactics (Gunpowder units move 15% faster)",
+      "imperial": "Hussite Reforms (Monk and Monastery technologies cost food instead of gold)"
+    },
+    "team_bonus": "Markets work 80% faster",
+    "tech_restrictions": "NO Bloodlines; NO Paladin; NO Thumb Ring; NO Ring Archer Armor"
+  },
+  "Britons": {
+    "focus": "Foot Archers",
+    "bonuses": [
+      "Town Centers cost -50% wood starting in Castle Age",
+      "Foot archers (except Skirmishers) get +1 range in Castle Age and +1 in Imperial Age (+2 total)",
+      "Shepherds work 25% faster",
+      "Archery Ranges work 20% faster"
+    ],
+    "unique_units": ["Longbowman"],
+    "unique_techs": {
+      "castle": "Yeomen (+1 foot archer range, +2 tower attack)",
+      "imperial": "Warwolf (Trebuchets deal blast damage and 100% accuracy vs units)"
+    },
+    "team_bonus": "Archery Ranges work 20% faster",
+    "tech_restrictions": "NO Bloodlines; NO Thumb Ring; NO Paladin; NO Hussar; NO Siege Onager; NO Bombard Cannon"
+  },
+  "Bulgarians": {
+    "focus": "Infantry and Cavalry",
+    "bonuses": [
+      "Militia-line upgrades are FREE automatically upon reaching next age (Man-at-Arms, Long Swordsman, Two-Handed Swordsman)",
+      "Town Centers cost -50% stone (only 50 stone instead of 100)",
+      "Blacksmith and Siege Workshop technologies cost -50% food",
+      "Can build Kreposts (mini-Castles costing 350 stone)"
+    ],
+    "unique_units": ["Konnik (dismounts as infantry when killed)"],
+    "unique_techs": {
+      "castle": "Stirrups (Cavalry and Konniks attack 33% faster)",
+      "imperial": "Bagains (Militia-line gets +5 melee armor, making Two-Handed Swordsmen shred Halberdiers)"
+    },
+    "team_bonus": "Blacksmiths work 80% faster",
+    "tech_restrictions": "CRITICAL: NO PALADIN (Cavalier is their maximum cavalry upgrade; NEVER recommend Paladin!); NO Crossbowman or Arbalester (Archer line ends at Archer); NO Ring Archer Armor; NO Treadmill Crane"
+  },
+  "Burgundians": {
+    "focus": "Cavalry and Economy",
+    "bonuses": [
+      "Economic upgrades available one age earlier and cost -33% food",
+      "Stable technologies cost -50%",
+      "Cavalier upgrade available in Castle Age",
+      "Gunpowder units deal +25% attack",
+      "Relics generate food in addition to gold"
+    ],
+    "unique_units": ["Coustillier", "Flemish Militia"],
+    "unique_techs": {
+      "castle": "Burgonet Helmets (+5 armor on cavalry)",
+      "imperial": "Flemish Revolution (Transforms all villagers into Flemish Militia)"
+    },
+    "team_bonus": "Relics generate food in addition to gold",
+    "tech_restrictions": "NO Bloodlines; NO Ring Archer Armor; NO Thumb Ring; NO Arbalester"
+  },
+  "Burmese": {
+    "focus": "Monks and Elephants",
+    "bonuses": [
+      "Lumber Camp technologies are free automatically",
+      "Infantry get +1 attack per age starting in Feudal Age (+3 in Imperial)",
+      "Monastery technologies cost -50%",
+      "Battle Elephants get +1/+1 armor"
+    ],
+    "unique_units": ["Arambai"],
+    "unique_techs": {
+      "castle": "Howdah (Battle Elephants get +1/+1 armor)",
+      "imperial": "Manipur Cavalry (Cavalry and Arambai deal +5 bonus damage vs buildings)"
+    },
+    "team_bonus": "Relics are visible on the map from the start of the game",
+    "tech_restrictions": "NO Leather Archer Armor; NO Ring Archer Armor; NO Paladin; NO Camel"
+  },
+  "Byzantines": {
+    "focus": "Defensive and Counter-units",
+    "bonuses": [
+      "Buildings get +10% HP in Dark, +20% in Feudal, +30% in Castle, +40% in Imperial Age",
+      "Camels, Skirmishers, and Spearmen lines cost -25%",
+      "Fire Galleys/Ships attack 25% faster",
+      "Advancing to Imperial Age costs -33%",
+      "Town Watch and Town Patrol are free automatically"
+    ],
+    "unique_units": ["Cataphract"],
+    "unique_techs": {
+      "castle": "Greek Fire (+1 range for Fire Ships and Dromons)",
+      "imperial": "Logistica (Cataphracts deal trample damage and bonus vs infantry)"
+    },
+    "team_bonus": "Monks heal 100% faster",
+    "tech_restrictions": "NO Bloodlines; NO Blast Furnace; NO Siege Engineers; NO Parthian Tactics"
+  },
+  "Celts": {
+    "focus": "Infantry and Siege",
+    "bonuses": [
+      "Infantry move 15% faster starting in Feudal Age",
+      "Lumberjacks work 15% faster",
+      "Siege weapons fire 25% faster",
+      "Sheep cannot be stolen if within Celt line of sight"
+    ],
+    "unique_units": ["Woad Raider"],
+    "unique_techs": {
+      "castle": "Stronghold (Castles and towers fire 25% faster and heal nearby infantry)",
+      "imperial": "Furor Celtica (Siege Workshop units get +40% HP)"
+    },
+    "team_bonus": "Siege Workshops work 20% faster",
+    "tech_restrictions": "NO Bloodlines; NO Arbalester; NO Thumb Ring; NO Ring Archer Armor; NO Paladin"
+  },
+  "Chinese": {
+    "focus": "Archer and Versatile",
+    "bonuses": [
+      "Start with +3 villagers but -50 wood and -200 food",
+      "Technologies cost -5% in Feudal, -10% in Castle, -15% in Imperial Age",
+      "Town Centers support 10 population and have +5 LOS",
+      "Demolition ships get +50% HP"
+    ],
+    "unique_units": ["Chu Ko Nu"],
+    "unique_techs": {
+      "castle": "Great Wall (Walls and towers get +30% HP)",
+      "imperial": "Rocketry (Chu Ko Nu +2 attack, Scorpions +4 attack)"
+    },
+    "team_bonus": "Farms provide +10% food",
+    "tech_restrictions": "NO Paladin; NO Hand Cannoneer; NO Siege Onager; NO Bombard Cannon"
+  },
+  "Cumans": {
+    "focus": "Cavalry and Aggressive Expansion",
+    "bonuses": [
+      "Can build an additional Town Center and Siege Workshop in Feudal Age",
+      "Archery Ranges and Stables cost -75 wood",
+      "Cavalry move 5% faster in Feudal, 10% in Castle, 15% in Imperial Age",
+      "Battering Ram and Capped Ram upgrades available one age earlier"
+    ],
+    "unique_units": ["Kipchak"],
+    "unique_techs": {
+      "castle": "Steppe Husbandry (Light Cav, Steppe Lancers, and Kipchaks train 100% faster)",
+      "imperial": "Cuman Mercenaries (Team members can train 5 free Elite Kipchaks per Castle)"
+    },
+    "team_bonus": "Palisade Walls get +33% HP",
+    "tech_restrictions": "NO Stone Walls or Stone Gates; NO Guard Tower / Keep; NO Paladin; NO Arbalester"
+  },
+  "Dravidians": {
+    "focus": "Infantry and Naval",
+    "bonuses": [
+      "Receive 200 wood upon advancing to the next Age",
+      "Fishermen and Fishing Ships work 15% faster and carry +15 food",
+      "Barracks technologies cost -50%",
+      "Skirmishers and Elephant Archers attack 25% faster"
+    ],
+    "unique_units": ["Urumi Swordsman", "Thirisadai"],
+    "unique_techs": {
+      "castle": "Medical Corps (Elephant units regenerate 30 HP/min)",
+      "imperial": "Wootz Steel (Infantry and cavalry attacks completely ignore armor!)"
+    },
+    "team_bonus": "Docks provide +5 population",
+    "tech_restrictions": "NO Bloodlines; NO Knights / Cavalier / Paladin; NO Husbandry; NO Plate Barding Armor"
+  },
+  "Ethiopians": {
+    "focus": "Foot Archers and Siege",
+    "bonuses": [
+      "Foot archers fire 18% faster",
+      "Receive +100 food and +100 gold upon advancing to next age",
+      "Pikeman upgrade is free automatically"
+    ],
+    "unique_units": ["Shotel Warrior"],
+    "unique_techs": {
+      "castle": "Royal Heirs (Shotel Warriors train in 4 seconds)",
+      "imperial": "Torsion Engines (Siege Workshop units blast radius increased)"
+    },
+    "team_bonus": "Towers and Outposts get +3 Line of Sight",
+    "tech_restrictions": "NO Bloodlines; NO Paladin; NO Ring Archer Armor; NO Hand Cannoneer"
+  },
+  "Franks": {
+    "focus": "Cavalry",
+    "bonuses": [
+      "Farm upgrades (Mill) are FREE automatically upon aging up",
+      "Cavalry have +20% HP starting in Feudal Age",
+      "Castles cost -25% (488 stone instead of 650)",
+      "Foragers work 15% faster"
+    ],
+    "unique_units": ["Throwing Axeman"],
+    "unique_techs": {
+      "castle": "Chivalry (Stables work 40% faster)",
+      "imperial": "Bearded Axe (Throwing Axemen get +1 range)"
+    },
+    "team_bonus": "Knights get +2 Line of Sight",
+    "tech_restrictions": "NO Bloodlines (compensated by +20% HP); NO Arbalester; NO Ring Archer Armor; NO Bracer; NO Siege Ram"
+  },
+  "Georgians": {
+    "focus": "Defensive and Cavalry",
+    "bonuses": [
+      "Start with a Mule Cart (costs -50 food initially)",
+      "Units take -15% damage when fighting from higher elevation (stacking with terrain bonus)",
+      "Fortified Church aura increases villager gather rate by 10% within 10 tiles",
+      "Cavalry regenerate 5 HP/min in Castle (15 HP/min in Imp)"
+    ],
+    "unique_units": ["Monaspa"],
+    "unique_techs": {
+      "castle": "Svan Towers (Defensive structures get +2 attack, fire pass-through arrows)",
+      "imperial": "Aznauri Cavalry (Cavalry take 15% less population space)"
+    },
+    "team_bonus": "Repairing buildings costs -25%",
+    "tech_restrictions": "NO Arbalester; NO Paladin; NO Siege Ram; NO Bombard Cannon"
+  },
+  "Goths": {
+    "focus": "Infantry",
+    "bonuses": [
+      "Infantry cost -20% in Dark, -25% in Feudal, -30% in Castle, -35% in Imperial Age",
+      "Infantry deal +1/+2/+3 bonus damage vs regular buildings",
+      "Villagers get +5 attack vs wild boars and carry +15 food from hunt",
+      "Loom is researched instantly",
+      "Population limit +10 in Imperial Age"
+    ],
+    "unique_units": ["Huskarl (immune to archer fire)"],
+    "unique_techs": {
+      "castle": "Anarchy (Huskarls can be created at Barracks)",
+      "imperial": "Perfusion (Barracks work 100% faster)"
+    },
+    "team_bonus": "Barracks work 20% faster",
+    "tech_restrictions": "NO Stone Walls; NO Guard Tower / Keep; NO Plate Barding Armor; NO Paladin; NO Arbalester"
+  },
+  "Gurjaras": {
+    "focus": "Cavalry and Camels",
+    "bonuses": [
+      "Can garrison herdables in Mills to generate continuous food trickle",
+      "Start with 2 forage bushes under the Town Center",
+      "Mounted units deal +40% bonus damage in Feudal Age (+50% in Castle/Imp)",
+      "Camels and Elephant units return food when killed"
+    ],
+    "unique_units": ["Chakram Thrower", "Shrivamsha Rider", "Camel Scout"],
+    "unique_techs": {
+      "castle": "Kshatriyas (Military units cost -25% food)",
+      "imperial": "Frontier Guards (Camels and Armored Elephants get +4 melee armor)"
+    },
+    "team_bonus": "Camel and elephant units train 25% faster",
+    "tech_restrictions": "NO Knights / Cavalier / Paladin; NO Arbalester; NO Blast Furnace; NO Heavy Scorpion"
+  },
+  "Hindustanis": {
+    "focus": "Camels and Gunpowder",
+    "bonuses": [
+      "Villagers cost -5% in Dark, -10% in Feudal, -15% in Castle, -20% in Imperial Age",
+      "Camel units attack 25% faster",
+      "Gunpowder units get +1/+1 armor",
+      "Can build Caravanserai in Imperial Age"
+    ],
+    "unique_units": ["Ghulam", "Imperial Camel Rider"],
+    "unique_techs": {
+      "castle": "Grand Trunk Road (All gold income is 10% faster, market fee only 10%)",
+      "imperial": "Shatagni (Hand Cannoneers get +2 range)"
+    },
+    "team_bonus": "Camel units and light cavalry deal +2 bonus damage vs buildings",
+    "tech_restrictions": "NO Knights / Cavalier / Paladin; NO Arbalester; NO Ring Archer Armor"
+  },
+  "Huns": {
+    "focus": "Cavalry",
+    "bonuses": [
+      "Do not need houses (population capped at maximum from game start, start with -100 wood)",
+      "Cavalry Archers cost -10% in Castle Age and -20% in Imperial Age",
+      "Trebuchets have +35% accuracy vs buildings"
+    ],
+    "unique_units": ["Tarkan"],
+    "unique_techs": {
+      "castle": "Marauders (Tarkans can be trained at Stables)",
+      "imperial": "Atheism (Relic and Wonder victory timer +100 years, Spies costs -50%)"
+    },
+    "team_bonus": "Stables work 20% faster",
+    "tech_restrictions": "NO Stone Walls or Gates; NO Guard Tower / Keep; NO Ring Archer Armor; NO Onager; NO Plate Mail Armor"
+  },
+  "Incas": {
+    "focus": "Infantry",
+    "bonuses": [
+      "Start with a free Llama under the Town Center",
+      "Villagers benefit from Blacksmith infantry armor and attack upgrades starting in Castle Age",
+      "Houses support 10 population",
+      "Buildings cost -15% stone"
+    ],
+    "unique_units": ["Kamayuk", "Slinger"],
+    "unique_techs": {
+      "castle": "Andean Sling (Slingers and Skirmishers have no minimum range)",
+      "imperial": "Fabric Shields (Kamayuks, Slingers, and Eagles get +1/+2 armor)"
+    },
+    "team_bonus": "Farms are built 100% faster",
+    "tech_restrictions": "NO Cavalry / Stables; NO Gunpowder; NO Arbalester"
+  },
+  "Italians": {
+    "focus": "Archer and Naval",
+    "bonuses": [
+      "Advancing to the next Age costs -15%",
+      "Dock technologies and Fishing Ships cost -33%",
+      "Gunpowder units cost -20%",
+      "Condottiero available in Imperial Age for team"
+    ],
+    "unique_units": ["Genoese Crossbowman", "Condottiero"],
+    "unique_techs": {
+      "castle": "Pavise (Genoese Crossbowmen and foot archers get +1/+1 armor)",
+      "imperial": "Silk Road (Trade units cost -50%)"
+    },
+    "team_bonus": "Condottiero available at Barracks in Imperial Age",
+    "tech_restrictions": "NO Paladin; NO Siege Onager; NO Heavy Camel; NO Halberdier"
+  },
+  "Japanese": {
+    "focus": "Infantry",
+    "bonuses": [
+      "Fishing Ships have 2x HP and work 5%/10%/15%/20% faster in Dark/Feudal/Castle/Imp",
+      "Mills, Lumber Camps, and Mining Camps cost -50% wood (50 wood instead of 100)",
+      "Infantry attack 33% faster starting in Feudal Age"
+    ],
+    "unique_units": ["Samurai (deals bonus damage vs unique units)"],
+    "unique_techs": {
+      "castle": "Yasama (Towers fire extra arrows)",
+      "imperial": "Kataparuto (Trebuchets fire and pack/unpack much faster)"
+    },
+    "team_bonus": "Galleys have +50% Line of Sight",
+    "tech_restrictions": "NO Paladin; NO Plate Barding Armor; NO Siege Ram; NO Bombard Cannon"
+  },
+  "Khmer": {
+    "focus": "Siege and Elephants",
+    "bonuses": [
+      "No prerequisite buildings needed to advance ages or unlock buildings",
+      "Farmers do not require drop-off buildings (food deposits instantly!)",
+      "Battle Elephants move 10% faster",
+      "Villagers can garrison inside Houses"
+    ],
+    "unique_units": ["Ballista Elephant"],
+    "unique_techs": {
+      "castle": "Tusk Swords (Battle Elephants get +3 attack)",
+      "imperial": "Double Cross (Ballista Elephants and Scorpions fire 2 projectiles)"
+    },
+    "team_bonus": "Scorpions get +1 range",
+    "tech_restrictions": "NO Thumb Ring; NO Arbalester; NO Plate Mail Armor; NO Paladin"
+  },
+  "Koreans": {
+    "focus": "Defensive and Naval",
+    "bonuses": [
+      "Villagers have +3 Line of Sight",
+      "Stone miners work 20% faster",
+      "Tower upgrades (Guard Tower, Keep) are free automatically",
+      "Military units (except siege) cost -20% wood"
+    ],
+    "unique_units": ["War Wagon", "Turtle Ship"],
+    "unique_techs": {
+      "castle": "Eupseong (Towers get +2 range)",
+      "imperial": "Shinkichon (Mangonel line gets +1 range)"
+    },
+    "team_bonus": "Mangonel line minimum range reduced",
+    "tech_restrictions": "NO Bloodlines; NO Paladin; NO Blast Furnace; NO Plate Barding Armor"
+  },
+  "Lithuanians": {
+    "focus": "Cavalry and Monks",
+    "bonuses": [
+      "Start with +150 food",
+      "Spearman-line and Skirmishers move 10% faster",
+      "Knights and Leitis gain +1 attack for each Relic garrisoned in Monastery (up to +4 max)"
+    ],
+    "unique_units": ["Leitis (attacks ignore armor!)", "Winged Hussar"],
+    "unique_techs": {
+      "castle": "Hill Forts (Town Centers get +3 range)",
+      "imperial": "Tower Shields (Spearmen and Skirmishers get +2 pierce armor)"
+    },
+    "team_bonus": "Monasteries work 20% faster",
+    "tech_restrictions": "NO Arbalester; NO Siege Engineers; NO Plate Mail Armor"
+  },
+  "Magyars": {
+    "focus": "Cavalry",
+    "bonuses": [
+      "Forging, Iron Casting, and Blast Furnace are FREE automatically upon reaching respective age",
+      "Scout Cavalry line costs -15%",
+      "Villagers kill wild wolves with a single blow"
+    ],
+    "unique_units": ["Magyar Huszar"],
+    "unique_techs": {
+      "castle": "Corvinian Army (Magyar Huszars cost no gold, only food!)",
+      "imperial": "Recurve Bow (Cavalry Archers get +1 range and +1 attack)"
+    },
+    "team_bonus": "Foot archers get +2 Line of Sight",
+    "tech_restrictions": "NO Camel; NO Plate Mail Armor; NO Squires; NO Hand Cannoneer"
+  },
+  "Malay": {
+    "focus": "Naval and Fast Aging",
+    "bonuses": [
+      "Advance to the next Age 66% faster",
+      "Fish Traps cost -33% and provide infinite food",
+      "Battle Elephants cost -30% in Castle Age and -40% in Imperial Age"
+    ],
+    "unique_units": ["Karambit Warrior"],
+    "unique_techs": {
+      "castle": "Thalassocracy (Upgrades Docks into Harbors that fire arrows)",
+      "imperial": "Forced Levy (Militia-line gold cost replaced with additional food)"
+    },
+    "team_bonus": "Docks get +100% Line of Sight",
+    "tech_restrictions": "NO Bloodlines; NO Chain Barding Armor; NO Plate Barding Armor; NO Paladin; NO Hand Cannoneer"
+  },
+  "Malians": {
+    "focus": "Infantry",
+    "bonuses": [
+      "Buildings cost -15% wood (except farms)",
+      "Barracks units get +1 pierce armor per age starting in Feudal Age (+3 in Imperial)",
+      "Gold mining upgrades are free automatically"
+    ],
+    "unique_units": ["Gbeto"],
+    "unique_techs": {
+      "castle": "Tigui (Town Centers fire arrows without garrisoned units)",
+      "imperial": "Farimba (Cavalry get +5 attack)"
+    },
+    "team_bonus": "Universities research 80% faster",
+    "tech_restrictions": "NO Bracer; NO Blast Furnace; NO Paladin; NO Halberdier"
+  },
+  "Mayans": {
+    "focus": "Foot Archers",
+    "bonuses": [
+      "Start with +1 villager but -50 food",
+      "Resources last 15% longer",
+      "Foot archers cost -10% in Feudal, -20% in Castle, -30% in Imperial Age",
+      "Free wall upgrades"
+    ],
+    "unique_units": ["Plumed Archer"],
+    "unique_techs": {
+      "castle": "Hul'che Javelineers (Skirmishers fire a second projectile)",
+      "imperial": "El Dorado (Eagle Warriors get +40 HP)"
+    },
+    "team_bonus": "Walls cost -50%",
+    "tech_restrictions": "NO Cavalry / Stables; NO Gunpowder; NO Champions; NO Siege Onager"
+  },
+  "Mongols": {
+    "focus": "Cavalry Archers and Hunters",
+    "bonuses": [
+      "Hunters work 40% faster",
+      "Light Cavalry, Hussars, and Steppe Lancers get +30% HP",
+      "Cavalry Archers fire 25% faster",
+      "Houses provide +5 additional population (10 total)"
+    ],
+    "unique_units": ["Mangudai"],
+    "unique_techs": {
+      "castle": "Nomads (Destroyed houses do not reduce max population)",
+      "imperial": "Drill (Siege Workshop units move 50% faster)"
+    },
+    "team_bonus": "Scout line +2 Line of Sight",
+    "tech_restrictions": "NO Paladin; NO Ring Archer Armor; NO Plate Barding Armor; NO Halberdier"
+  },
+  "Persians": {
+    "focus": "Cavalry",
+    "bonuses": [
+      "Start with +50 food and +50 wood",
+      "Town Centers and Docks have 2x HP and work 10%/15%/20% faster in Feudal/Castle/Imp",
+      "Cavalry generate 5 gold upon killing enemy military units",
+      "Can train Savars (heavily armored cavalry replacing Paladin)"
+    ],
+    "unique_units": ["War Elephant", "Savar"],
+    "unique_techs": {
+      "castle": "Kamandaran (Archer gold cost replaced with additional wood)",
+      "imperial": "Citadels (Castles take -25% damage, bullets pass through)"
+    },
+    "team_bonus": "Knights deal +2 bonus damage vs archers",
+    "tech_restrictions": "NO Arbalester; NO Two-Handed Swordsman; NO Siege Onager; NO Bracer"
+  },
+  "Poles": {
+    "focus": "Cavalry and Infantry",
+    "bonuses": [
+      "Folwark replaces Mill and instantly deposits 8% of surrounding farms upon seeding",
+      "Stone miners generate gold in addition to stone (2 stone = 1 gold)",
+      "Villagers regenerate HP automatically (5 HP/min in Dark, up to 20 in Imp)"
+    ],
+    "unique_units": ["Obuch (strips enemy unit armor with every hit!)", "Winged Hussar"],
+    "unique_techs": {
+      "castle": "Szlachta Privileges (Knights cost -60% gold!)",
+      "imperial": "Lechitic Legacy (Light Cavalry deal trample damage)"
+    },
+    "team_bonus": "Scout line +1 bonus damage vs archers",
+    "tech_restrictions": "NO Paladin; NO Plate Barding Armor; NO Ring Archer Armor; NO Halberdier"
+  },
+  "Portuguese": {
+    "focus": "Naval and Gunpowder",
+    "bonuses": [
+      "All units cost -20% gold",
+      "All technologies research 30% faster",
+      "Ships get +10% HP",
+      "Can build Feitorias in Imperial Age (produces continuous infinite food, wood, gold, and stone)"
+    ],
+    "unique_units": ["Organ Gun", "Caravel"],
+    "unique_techs": {
+      "castle": "Carracks (Ships get +1/+1 armor)",
+      "imperial": "Arquebus (Gunpowder units benefit from Ballistics, leading moving targets)"
+    },
+    "team_bonus": "Line of Sight is shared with allies from the Dark Age",
+    "tech_restrictions": "NO Paladin; NO Squires; NO Heavy Camel; NO Fast Fire Ship"
+  },
+  "Romans": {
+    "focus": "Infantry",
+    "bonuses": [
+      "Villagers gather, build, and repair 5% faster (repair 20% faster)",
+      "Galley-line fires 2 projectiles",
+      "Infantry receive double armor benefit from Blacksmith upgrades",
+      "Scorpions cost -60% wood and benefit from Ballistics"
+    ],
+    "unique_units": ["Legionary", "Centurion"],
+    "unique_techs": {
+      "castle": "Ballistas (Scorpions and Galleys fire 33% faster)",
+      "imperial": "Comitatenses (Legionaries and Centurions train 50% faster, charge attack)"
+    },
+    "team_bonus": "Scorpion line minimum range reduced",
+    "tech_restrictions": "NO Paladin; NO Arbalester; NO Hand Cannoneer; NO Thumb Ring; NO Gunpowder"
+  },
+  "Saracens": {
+    "focus": "Camel and Naval",
+    "bonuses": [
+      "Market commodity fee is only 5% (instead of standard 30%)",
+      "Markets cost -100 wood (only 75 wood)",
+      "Archery Range units get +2 attack vs buildings (+3 in Imperial Age)",
+      "Transport ships have 2x HP and +5 capacity"
+    ],
+    "unique_units": ["Mameluke"],
+    "unique_techs": {
+      "castle": "Counterweights (Trebuchets and Mangonels get +15% attack)",
+      "imperial": "Zealotry (Camels and Mamelukes get +20 HP)"
+    },
+    "team_bonus": "Foot archers deal +2 bonus damage vs buildings",
+    "tech_restrictions": "NO Cavalier / Paladin; NO Halberdier; NO Bombard Tower; NO Shipwright"
+  },
+  "Sicilians": {
+    "focus": "Cavalry and Infantry",
+    "bonuses": [
+      "Castles and Town Centers are built 100% faster",
+      "Land military units absorb 33% of incoming bonus damage",
+      "Farm upgrades give +100% additional food",
+      "Can build Donjons (which train Serjeants) starting in Feudal Age"
+    ],
+    "unique_units": ["Serjeant"],
+    "unique_techs": {
+      "castle": "First Crusade (Each TC spawns 5 Serjeants, up to 25 total)",
+      "imperial": "Hauberk (Knights get +1/+2 armor)"
+    },
+    "team_bonus": "Transport ships get +5 Line of Sight and cost -50%",
+    "tech_restrictions": "NO Paladin; NO Camel; NO Ring Archer Armor; NO Hand Cannoneer"
+  },
+  "Slavs": {
+    "focus": "Infantry and Siege",
+    "bonuses": [
+      "Farmers work 10% faster",
+      "Supplies is free automatically",
+      "Siege Workshop units cost -15%",
+      "Military buildings provide +5 population"
+    ],
+    "unique_units": ["Boyar"],
+    "unique_techs": {
+      "castle": "Detinets (Castles and towers cost 40% stone converted to wood)",
+      "imperial": "Druzhina (Infantry deal trample damage to adjacent units)"
+    },
+    "team_bonus": "Military buildings provide +5 population",
+    "tech_restrictions": "NO Paladin; NO Bracer; NO Thumb Ring; NO Camel; NO Arbalester"
+  },
+  "Spanish": {
+    "focus": "Gunpowder and Monks",
+    "bonuses": [
+      "Builders work 30% faster",
+      "Blacksmith upgrades cost NO GOLD (food and wood only!)",
+      "Cannon Galleons benefit from Ballistics",
+      "Hand Cannoneers and Bombard Cannons fire 18% faster",
+      "Gain 20 gold for each technology researched"
+    ],
+    "unique_units": ["Conquistador", "Missionary"],
+    "unique_techs": {
+      "castle": "Inquisition (Monks convert faster)",
+      "imperial": "Supremacy (Villagers get +40 HP, +6 attack, and +2/+2 armor)"
+    },
+    "team_bonus": "Trade units generate +25% more gold",
+    "tech_restrictions": "NO Crossbowman / Arbalester (Archer line ends at Archer); NO Siege Onager; NO Siege Engineers"
+  },
+  "Tatars": {
+    "focus": "Cavalry Archers",
+    "bonuses": [
+      "Herdables contain +50% food",
+      "Units deal +25% damage when fighting from higher elevation",
+      "Thumb Ring and Parthian Tactics are free automatically",
+      "Keshiks generate gold when fighting enemy units"
+    ],
+    "unique_units": ["Keshik", "Flaming Camel"],
+    "unique_techs": {
+      "castle": "Silk Armor (Scouts, Cav Archers, and Steppe Lancers get +1/+1 armor)",
+      "imperial": "Timurid Siegecraft (Trebuchets get +2 range)"
+    },
+    "team_bonus": "Cavalry Archers get +2 Line of Sight",
+    "tech_restrictions": "NO Paladin; NO Arbalester; NO Plate Mail Armor; NO Chain Barding Armor"
+  },
+  "Teutons": {
+    "focus": "Infantry and Cavalry",
+    "bonuses": [
+      "Farms cost -40% (only 36 wood instead of 60)",
+      "Barracks and Stable units get +1 melee armor in Castle and +1 in Imperial Age (+2 total)",
+      "Town Centers garrison 25 units (+10) and fire extra arrows",
+      "Monks heal at 2x range",
+      "Towers garrison 2x units"
+    ],
+    "unique_units": ["Teutonic Knight"],
+    "unique_techs": {
+      "castle": "Ironclad (Siege weapons get +4 melee armor)",
+      "imperial": "Crenellations (Castles get +3 range, infantry garrisoned fire arrows)"
+    },
+    "team_bonus": "Units are more resistant to conversion",
+    "tech_restrictions": "NO Husbandry (Teuton cavalry is slower!); NO Thumb Ring; NO Bracer; NO Light Cavalry / Hussar"
+  },
+  "Turks": {
+    "focus": "Gunpowder",
+    "bonuses": [
+      "Gunpowder units get +25% HP",
+      "Gunpowder technologies cost -50%",
+      "Chemistry is free automatically upon reaching Imperial Age",
+      "Light Cavalry and Hussar upgrades are free automatically",
+      "Gold miners work 20% faster"
+    ],
+    "unique_units": ["Janissary"],
+    "unique_techs": {
+      "castle": "Sipahi (Cavalry Archers get +20 HP)",
+      "imperial": "Artillery (Bombard Towers, Bombard Cannons, and Cannon Galleons get +2 range)"
+    },
+    "team_bonus": "Gunpowder units train 25% faster",
+    "tech_restrictions": "NO Arbalester; NO Elite Skirmisher; NO Pikeman / Halberdier; NO Paladin; NO Siege Onager"
+  },
+  "Vietnamese": {
+    "focus": "Foot Archers",
+    "bonuses": [
+      "Enemy starting Town Centers are revealed on the minimap at game start",
+      "Archery Range units have +20% HP",
+      "Conscription is free automatically",
+      "Economic upgrades cost NO WOOD"
+    ],
+    "unique_units": ["Rattan Archer", "Imperial Skirmisher"],
+    "unique_techs": {
+      "castle": "Chatras (Battle Elephants get +100 HP)",
+      "imperial": "Paper Money (Tribute fee reduced to 500 gold for team)"
+    },
+    "team_bonus": "Imperial Skirmisher upgrade available in Imperial Age",
+    "tech_restrictions": "NO Paladin; NO Blast Furnace; NO Hand Cannoneer; NO Siege Onager"
+  },
+  "Vikings": {
+    "focus": "Infantry and Naval",
+    "bonuses": [
+      "Warships cost -15% in Feudal, -15% in Castle, -20% in Imperial Age",
+      "Infantry get +20% HP starting in Feudal Age",
+      "Wheelbarrow and Hand Cart are FREE automatically upon reaching Feudal and Castle Age"
+    ],
+    "unique_units": ["Berserk (regenerates HP)", "Longboat"],
+    "unique_techs": {
+      "castle": "Chieftains (Infantry deal heavy bonus damage vs cavalry)",
+      "imperial": "Bogsveigar (Foot archers and Longboats get +1 attack)"
+    },
+    "team_bonus": "Docks cost -15%",
+    "tech_restrictions": "NO Bloodlines; NO Thumb Ring; NO Paladin; NO Halberdier; NO Plate Barding Armor"
+  }
+}
