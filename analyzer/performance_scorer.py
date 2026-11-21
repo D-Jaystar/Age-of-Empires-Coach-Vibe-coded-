@@ -26,6 +26,10 @@ def calculate_performance_scores(
     castle_age: Optional[CastleAgeMetrics] = None,
     imperial_age: Optional[ImperialAgeMetrics] = None,
     game_duration_s: float = 0.0,
+    units_lost: Optional[int] = None,
+    micro_score: Optional[float] = None,
+    micro_apm: Optional[float] = None,
+    micro_style: Optional[str] = None,
 ) -> PerformanceScores:
     """Calculate deterministic match performance percentage scores.
 
@@ -194,4 +198,8 @@ def calculate_performance_scores(
         total_military_units=total_mil_units,
         military_by_age=military_by_age,
         top_military_lines=top_military_lines,
+        units_lost=units_lost,
+        micro_score=micro_score,
+        micro_apm=micro_apm,
+        micro_style=micro_style,
     )

@@ -22,6 +22,7 @@ from analyzer.economy_heuristics import (
     estimate_vils_at_feudal_click,
     extract_build_order,
 )
+from analyzer.combat_micro_analyzer import analyze_micro_actions, analyze_units_lost
 from analyzer.military_heuristics import (
     calculate_composition_focus,
     count_military_buildings,
@@ -367,7 +368,37 @@ def build_telemetry_report(
             )
         )
 
-    scores = calculate_performance_scores(dark_metrics, feudal_metrics, castle_metrics, imperial_metrics, game_duration_s)
+    # Combat casualties and battlefield micro
+    tot_military = (
+        (feudal_metrics.military_units_trained if feudal_metrics else 0)
+        + (castle_metrics.military_units_trained if castle_metrics else 0)
+        + (imperial_metrics.military_units_trained if imperial_metrics else 0)
+    )
+    vils_trained = sum(1 for inp in raw_inputs if "villager" in str(inp.get("param", "")).lower())
+    tot_trained = tot_military + vils_trained + 4
+
+    combat_data = analyze_units_lost(
+        player_data=target_player_dict,
+        timeseries=target_player_dict.get("timeseries"),
+        total_units_trained=tot_trained,
+        feudal_up_s=feudal_up,
+        castle_up_s=castle_up,
+        imp_up_s=p_uptimes.get("imperial"),
+    )
+    micro_data = analyze_micro_actions(
+        raw_inputs=raw_inputs,
+        game_duration_s=game_duration_s,
+        eapm=player_info.eapm,
+    )
+
+    scores = calculate_performance_scores(
+        dark_metrics, feudal_metrics, castle_metrics, imperial_metrics, game_duration_s,
+        units_lost=combat_data.get("units_lost"),
+        micro_score=micro_data.get("micro_score"),
+        micro_apm=micro_data.get("micro_apm"),
+        micro_style=micro_data.get("micro_style"),
+    )
+    combat_and_micro = {**combat_data, **micro_data}
     multi_layer = build_multi_layer_analysis(
         metadata=metadata,
         player_info=player_info,
@@ -377,6 +408,7 @@ def build_telemetry_report(
         imperial_age=imperial_metrics,
         scores=scores,
         opponents=opponents,
+        combat_and_micro=combat_and_micro,
     )
     telemetry = PlayerTelemetry(
         player=player_info,
@@ -418,11 +450,13 @@ def convert(
     by_age_str = ", ".join(f"{age.split()[0]}: {cnt}" for age, cnt in sc.military_by_age.items()) if sc and sc.military_by_age else (f"{sc.total_military_units}" if sc else "")
     top_lines = ", ".join(f"{line} ({cnt})" for line, cnt in list(sc.top_military_lines.items())[:3]) if sc else ""
     lines_str = f"\n  ↳ Top Lines: {top_lines}" if top_lines else ""
+    micro_str = f"\n• Tactical Micro:        [bold cyan]{sc.micro_score}%[/bold cyan] ({sc.micro_apm} micro APM)" if sc and sc.micro_score is not None else ""
+    lost_str = f"\n• Casualties/Units Lost: [bold cyan]~{sc.units_lost} lost[/bold cyan]" if sc and sc.units_lost is not None else ""
     sc_str = (
         f"\n\n[bold yellow]Performance Benchmarks:[/bold yellow]\n"
         f"• TC Uptime (Dark Age): [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] (Idle: {sc.tc_idle_pct}%)\n"
         f"• Economy Efficiency:   [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
-        f"• Military Focus/Value: [bold cyan]{sc.military_value_score}%[/bold cyan] ({sc.total_military_units} units: {by_age_str}){lines_str}"
+        f"• Military Focus/Value: [bold cyan]{sc.military_value_score}%[/bold cyan] ({sc.total_military_units} units: {by_age_str}){lines_str}{micro_str}{lost_str}"
     ) if sc else ""
 
     console.print(
@@ -528,24 +562,28 @@ def coach(
         top_lines_str = ", ".join(f"{line} ({cnt})" for line, cnt in list(sc.top_military_lines.items())[:3])
         if lang == "en":
             lines_desc = f"\n  [dim]↳ Top Unit Lines: {top_lines_str}[/dim]" if top_lines_str else ""
+            micro_desc = f"\n• [bold]Tactical Micro Score:[/bold]          [bold cyan]{sc.micro_score}%[/bold cyan] ([dim]{sc.micro_apm} micro APM | {sc.micro_style}[/dim])" if sc.micro_score is not None else ""
+            lost_desc = f"\n• [bold]Casualties / Units Lost:[/bold]       [bold cyan]~{sc.units_lost} lost[/bold cyan] ([dim]vs {sc.total_military_units} military produced[/dim])" if sc.units_lost is not None else ""
             content = (
                 f"• [bold]Match Format & Role:[/bold]           [bold magenta]{report.metadata.gamemode}[/bold magenta] ({report.metadata.map_position or 'Standard'})\n"
                 f"• [bold]Town Center Uptime (Dark Age):[/bold]  [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] "
                 f"([dim]Idle: {sc.tc_idle_pct}% | {format_timestamp(idle_s)} min[/dim])\n"
                 f"• [bold]Economy Efficiency Score:[/bold]       [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
                 f"• [bold]Military Value & Focus Score:[/bold]   [bold cyan]{sc.military_value_score}%[/bold cyan] "
-                f"([dim]{sc.total_military_units} units total: {by_age_str}[/dim]){lines_desc}"
+                f"([dim]{sc.total_military_units} units total: {by_age_str}[/dim]){lines_desc}{micro_desc}{lost_desc}"
             )
             title = "📊 Match Performance Benchmarks"
         else:
             lines_desc = f"\n  [dim]↳ Belangrijkste Eenheden: {top_lines_str}[/dim]" if top_lines_str else ""
+            micro_desc = f"\n• [bold]Tactische Micro Score:[/bold]         [bold cyan]{sc.micro_score}%[/bold cyan] ([dim]{sc.micro_apm} micro APM | {sc.micro_style}[/dim])" if sc.micro_score is not None else ""
+            lost_desc = f"\n• [bold]Verliezen / Units Lost:[/bold]        [bold cyan]~{sc.units_lost} verloren[/bold cyan] ([dim]vs {sc.total_military_units} geproduceerd[/dim])" if sc.units_lost is not None else ""
             content = (
                 f"• [bold]Wedstrijd Format & Rol:[/bold]         [bold magenta]{report.metadata.gamemode}[/bold magenta] ({report.metadata.map_position or 'Standaard'})\n"
                 f"• [bold]Town Center Uptime (Dark Age):[/bold]  [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] "
                 f"([dim]Idle: {sc.tc_idle_pct}% | {format_timestamp(idle_s)} min[/dim])\n"
                 f"• [bold]Economie Efficiëntie Score:[/bold]     [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
                 f"• [bold]Militaire Waarde & Focus:[/bold]        [bold cyan]{sc.military_value_score}%[/bold cyan] "
-                f"([dim]{sc.total_military_units} eenheden totaal: {by_age_str}[/dim]){lines_desc}"
+                f"([dim]{sc.total_military_units} eenheden totaal: {by_age_str}[/dim]){lines_desc}{micro_desc}{lost_desc}"
             )
             title = "📊 Wedstrijd Prestatie Scores"
         console.print(Panel(content, title=title, border_style="cyan"))

@@ -694,3 +694,41 @@ def test_build_multi_layer_analysis() -> None:
     assert "army_archetype" in ml.military.composition_synergy
     assert "expected_role_responsibility" in ml.strategy.format_and_role
 
+
+def test_combat_and_micro_analysis() -> None:
+    from analyzer.combat_micro_analyzer import analyze_micro_actions, analyze_units_lost
+
+    raw_inputs = [
+        {"timestamp_s": 100.0, "type": "Move"},
+        {"timestamp_s": 105.0, "type": "Target", "param": "Archer"},
+        {"timestamp_s": 110.0, "type": "Patrol"},
+        {"timestamp_s": 120.0, "type": "Garrison"},
+        {"timestamp_s": 125.0, "type": "Ungarrison"},
+        {"timestamp_s": 130.0, "type": "Stance", "param": "Stand Ground"},
+    ]
+
+    micro = analyze_micro_actions(raw_inputs, game_duration_s=600.0)
+    assert micro["total_tactical_commands"] == 6
+    assert micro["target_commands"] == 1
+    assert micro["patrol_commands"] == 1
+    assert micro["garrison_commands"] == 1
+    assert micro["micro_score"] > 0
+
+    class DummyRow:
+        def __init__(self, t: float, o: int):
+            from datetime import timedelta
+            self.timestamp = timedelta(seconds=t)
+            self.total_objects = o
+
+    ts = [
+        DummyRow(0.0, 14),
+        DummyRow(100.0, 20),
+        DummyRow(200.0, 12),  # drop of 8
+    ]
+
+    combat = analyze_units_lost({"achievements": {}}, timeseries=ts, total_units_trained=25)
+    assert combat["units_lost"] > 0
+    assert len(combat["major_engagements"]) == 1
+    assert combat["major_engagements"][0]["casualties"] == 8
+
+

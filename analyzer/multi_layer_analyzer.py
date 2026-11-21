@@ -39,6 +39,7 @@ def build_multi_layer_analysis(
     imperial_age: Optional[ImperialAgeMetrics] = None,
     scores: Optional[PerformanceScores] = None,
     opponents: Optional[list[OpponentSummary]] = None,
+    combat_and_micro: Optional[dict[str, Any]] = None,
 ) -> MultiLayerAnalysis:
     """Build a comprehensive, chunked MultiLayerAnalysis for the coached match."""
 
@@ -173,6 +174,7 @@ def build_multi_layer_analysis(
         composition_synergy=composition_data,
         upgrade_alignment=upgrade_data,
         production_infrastructure=infrastructure_data,
+        combat_and_micro=combat_and_micro or {},
     )
 
     # =======================================================================

@@ -88,7 +88,7 @@ You review recorded game telemetry to give sharp, concrete, and highly actionabl
 ### MULTI-LAYER COGNITIVE DECOMPOSITION:
 To provide exceptionally thorough coaching without cognitive rush, analyze the telemetry systematically through these 3 analytical layers:
 - **Layer 1: Economy Diagnostics** (Continuity/TC Uptime, Resource Distribution, Farm Engine & Fish Macro, Spatial Micro/Walking Distance, Eco Scaling/Wheelbarrow).
-- **Layer 2: Military Diagnostics** (Volume & Pacing across all ages, Unit Line Synergy, Upgrade Alignment & Blacksmith Armor/Attack, Production Infrastructure).
+- **Layer 2: Military & Micro Diagnostics** (Volume & Pacing across all ages, Unit Line Synergy, Upgrade Alignment, Battlefield Micro [Focus Fire, Patrol, Garrison micro, Stances], Casualties/Units Lost & Major Battles).
 - **Layer 3: Strategy & Matchup Diagnostics** (Game Mode & Map Role Flank/Pocket/1v1, Opening Execution, Tactical Counters vs Opponent Rosters).
 
 ### REQUIRED OUTPUT FORMAT:

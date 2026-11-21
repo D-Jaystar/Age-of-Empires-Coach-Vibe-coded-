@@ -130,6 +130,10 @@ class PerformanceScores(BaseModel):
     total_military_units: int = 0
     military_by_age: dict[str, int] = Field(default_factory=dict)
     top_military_lines: dict[str, int] = Field(default_factory=dict)
+    units_lost: int | None = None
+    micro_score: float | None = None
+    micro_apm: float | None = None
+    micro_style: str | None = None
 
 
 class EconomyMultiLayer(BaseModel):
@@ -146,6 +150,7 @@ class MilitaryMultiLayer(BaseModel):
     composition_synergy: dict[str, Any] = Field(default_factory=dict)
     upgrade_alignment: dict[str, Any] = Field(default_factory=dict)
     production_infrastructure: dict[str, Any] = Field(default_factory=dict)
+    combat_and_micro: dict[str, Any] = Field(default_factory=dict)
 
 
 class StrategyMultiLayer(BaseModel):

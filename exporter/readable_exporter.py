@@ -122,6 +122,10 @@ def export_markdown(
             f"| **Economy Efficiency Score** | **{sc.eco_efficiency_score}%** | Benchmark based on TC consistency, farming engine, drop-off distance |",
             f"| **Military Value & Focus Score** | **{sc.military_value_score}%** | Total units: {sc.total_military_units} ({', '.join(f'{k}: {v}' for k, v in sc.military_by_age.items()) if sc.military_by_age else 'none'}) |",
         ])
+        if sc.micro_score is not None:
+            md_lines.append(f"| **Tactical Micro Score** | **{sc.micro_score}%** | {sc.micro_apm or 0} micro APM - {sc.micro_style or 'Standard'} |")
+        if sc.units_lost is not None:
+            md_lines.append(f"| **Casualties & Units Lost** | **~{sc.units_lost} lost** | vs {sc.total_military_units} military produced |")
 
     # 1. Dark Age
     da = tp.dark_age
@@ -238,6 +242,8 @@ def export_markdown(
             f"- **Volume & Pacing:** **{ml.military.volume_pacing.get('total_military_units', 0)} units total** ({ml.military.volume_pacing.get('units_per_minute_active', 0)} units/min active) - Rating: **{ml.military.volume_pacing.get('volume_rating', 'N/A')}**",
             f"- **Composition:** Archetype: **{ml.military.composition_synergy.get('army_archetype', 'N/A')}**, Primary: {ml.military.composition_synergy.get('primary_unit_line', 'N/A')}, Secondary: {ml.military.composition_synergy.get('secondary_unit_line', 'N/A')}",
             f"- **Upgrades Alignment:** Rating: **{ml.military.upgrade_alignment.get('upgrade_alignment_evaluation', 'N/A')}** ({ml.military.upgrade_alignment.get('total_military_upgrades_count', 0)} techs)",
+            f"- **Tactical Micro:** **{ml.military.combat_and_micro.get('micro_score', 'N/A')}%** ({ml.military.combat_and_micro.get('micro_apm', 0)} micro APM, {ml.military.combat_and_micro.get('target_commands', 0)} focus-fire / {ml.military.combat_and_micro.get('patrol_commands', 0)} patrol / {ml.military.combat_and_micro.get('garrison_commands', 0)} garrison)",
+            f"- **Casualties & Losses:** ~{ml.military.combat_and_micro.get('units_lost', 'N/A')} units lost (Preservation: {ml.military.combat_and_micro.get('preservation_efficiency_pct', 'N/A')}%)",
             "",
             "### 🎯 Strategic Matchup Layers",
             f"- **Format & Role:** Mode: **{ml.strategy.format_and_role.get('gamemode', 'N/A')}**, Position: **{ml.strategy.format_and_role.get('map_position', 'N/A')}**",

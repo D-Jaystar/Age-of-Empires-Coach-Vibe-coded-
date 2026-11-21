@@ -131,6 +131,8 @@ def extract_player_data(match: Any) -> list[dict[str, Any]]:
             "eapm": int(eapm) if eapm is not None else None,
             "winner": winner,
             "profile_id": int(profile_id) if profile_id is not None else None,
+            "timeseries": getattr(player, "timeseries", []),
+            "achievements": getattr(player, "achievements", {}),
         })
 
     return players_data
