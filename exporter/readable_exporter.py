@@ -91,6 +91,7 @@ def export_markdown(
         "## Match Overview",
         "",
         f"- **Map:** {meta.map_name} ({meta.map_size})",
+        f"- **Game Mode:** {meta.gamemode} ({meta.map_position or 'Standard'})",
         f"- **Type:** {'Water Map' if meta.is_water_map else 'Hybrid Map' if meta.is_hybrid_map else 'Land Map'}",
         f"- **Duration:** {format_duration(meta.game_duration_s)} ({int(meta.game_duration_s)}s)",
         f"- **Winner:** {meta.winner_name or 'Undetermined'}",
@@ -119,7 +120,7 @@ def export_markdown(
             "| :--- | :---: | :--- |",
             f"| **Town Center Uptime (Dark Age)** | **{sc.tc_uptime_pct}%** | Total Idle: {tp.dark_age.total_idle_tc_s:.1f}s ({sc.tc_idle_pct}% idle) |",
             f"| **Economy Efficiency Score** | **{sc.eco_efficiency_score}%** | Benchmark based on TC consistency, farming engine, drop-off distance |",
-            f"| **Military Value & Focus Score** | **{sc.military_value_score}%** | Total units: {sc.total_military_units}, composition focus & upgrades |",
+            f"| **Military Value & Focus Score** | **{sc.military_value_score}%** | Total units: {sc.total_military_units} ({', '.join(f'{k}: {v}' for k, v in sc.military_by_age.items()) if sc.military_by_age else 'none'}) |",
         ])
 
     # 1. Dark Age

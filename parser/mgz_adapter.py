@@ -69,6 +69,10 @@ def extract_match_metadata(match: Any) -> dict[str, Any]:
     except (ValueError, TypeError):
         save_version = 0.0
 
+    raw_type = getattr(match, "type", "Random Map")
+    gamemode_name = str(raw_type) if raw_type else "Random Map"
+    diplomacy_type = str(getattr(match, "diplomacy_type", "")) or None
+
     return {
         "map_name": map_name,
         "map_size": str(map_size),
@@ -78,6 +82,8 @@ def extract_match_metadata(match: Any) -> dict[str, Any]:
         "is_hybrid_map": is_hybrid,
         "game_version": game_version,
         "save_version": save_version,
+        "gamemode": gamemode_name,
+        "diplomacy": diplomacy_type,
     }
 
 

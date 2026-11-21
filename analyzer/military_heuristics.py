@@ -28,16 +28,22 @@ UNIT_LINE_MAP: dict[str, str] = {
     "paladin": "Knight line",
     "camel rider": "Camel line",
     "heavy camel rider": "Camel line",
+    "imperial camel rider": "Camel line",
     "steppe lancer": "Steppe Lancer",
+    "elite steppe lancer": "Steppe Lancer",
     "battle elephant": "Battle Elephant",
+    "elite battle elephant": "Battle Elephant",
     # Archers
     "archer": "Archer / Crossbow line",
     "crossbowman": "Archer / Crossbow line",
     "arbalester": "Archer / Crossbow line",
     "skirmisher": "Skirmisher line",
     "elite skirmisher": "Skirmisher line",
+    "imperial skirmisher": "Skirmisher line",
     "cavalry archer": "Cavalry Archer",
     "heavy cavalry archer": "Cavalry Archer",
+    "genitour": "Genitour",
+    "slinger": "Slinger",
     # Infantry
     "militia": "Militia line",
     "man-at-arms": "Militia line",
@@ -49,18 +55,93 @@ UNIT_LINE_MAP: dict[str, str] = {
     "halberdier": "Spearman line",
     "eagle scout": "Eagle line",
     "eagle warrior": "Eagle line",
+    "elite eagle warrior": "Eagle line",
+    "condottiero": "Condottiero",
+    # Gunpowder
+    "hand cannoneer": "Hand Cannoneer",
+    "bombard cannon": "Bombard Cannon",
+    "petard": "Petard",
     # Siege
     "battering ram": "Ram line",
     "capped ram": "Ram line",
     "siege ram": "Ram line",
     "mangonel": "Mangonel line",
     "onager": "Mangonel line",
+    "siege onager": "Mangonel line",
     "scorpion": "Scorpion line",
-    "bombard cannon": "Bombard Cannon",
+    "heavy scorpion": "Scorpion line",
+    "armored elephant": "Siege Elephant line",
+    "siege elephant": "Siege Elephant line",
     "trebuchet": "Trebuchet",
     # Monk
     "monk": "Monk",
+    "missionary": "Missionary",
+    # Navy / Warships
+    "galley": "Galley line",
+    "war galley": "Galley line",
+    "galleon": "Galley line",
+    "fire galley": "Fire ship line",
+    "fire ship": "Fire ship line",
+    "fast fire ship": "Fire ship line",
+    "demolition raft": "Demolition ship line",
+    "demolition ship": "Demolition ship line",
+    "heavy demolition ship": "Demolition ship line",
+    "cannon galleon": "Cannon Galleon",
+    "elite cannon galleon": "Cannon Galleon",
+    "dromon": "Dromon",
+    "caravel": "Caravel",
+    "longboat": "Longboat",
+    "turtle ship": "Turtle Ship",
+    # Unique Units
+    "konnik": "Konnik",
+    "longbowman": "Longbowman",
+    "cataphract": "Cataphract",
+    "chu ko nu": "Chu Ko Nu",
+    "huskarl": "Huskarl",
+    "samurai": "Samurai",
+    "mangudai": "Mangudai",
+    "war elephant": "War Elephant",
+    "mameluke": "Mameluke",
+    "teutonic knight": "Teutonic Knight",
+    "woad raider": "Woad Raider",
+    "janissary": "Janissary",
+    "berserk": "Berserk",
+    "plumed archer": "Plumed Archer",
+    "conquistador": "Conquistador",
+    "tarkan": "Tarkan",
+    "war wagon": "War Wagon",
+    "jaguar warrior": "Jaguar Warrior",
+    "kamayuk": "Kamayuk",
+    "boyar": "Boyar",
+    "magyar huszar": "Magyar Huszar",
+    "genoese crossbowman": "Genoese Crossbowman",
+    "camel archer": "Camel Archer",
+    "shotel warrior": "Shotel Warrior",
+    "gbeto": "Gbeto",
+    "arambai": "Arambai",
+    "ballista elephant": "Ballista Elephant",
+    "karambit warrior": "Karambit Warrior",
+    "rattan archer": "Rattan Archer",
+    "keshik": "Keshik",
+    "leitis": "Leitis",
+    "kipchak": "Kipchak",
+    "coustillier": "Coustillier",
+    "serjeant": "Serjeant",
+    "obuch": "Obuch",
+    "hussite wagon": "Hussite Wagon",
+    "urumi swordsman": "Urumi Swordsman",
+    "chakram thrower": "Chakram Thrower",
+    "ghulam": "Ghulam",
+    "shrivamsha rider": "Shrivamsha Rider",
+    "centurion": "Centurion",
+    "legionary": "Legionary",
+    "composite bowman": "Composite Bowman",
+    "monaspa": "Monaspa",
 }
+
+NON_MILITARY_UNITS: frozenset[str] = frozenset({
+    "villager", "trade cart", "fishing ship", "transport ship", "relic", "sheep", "cow", "boar"
+})
 
 BLACKSMITH_TECHS: frozenset[str] = frozenset({
     "forging", "iron casting", "blast furnace",
@@ -194,6 +275,52 @@ def detect_early_gold(
     return False
 
 
+def extract_military_units(
+    events: list[dict[str, Any]] | None,
+    start_s: float,
+    end_s: float,
+) -> tuple[int, dict[str, int]]:
+    """Count military units queued and breakdown by unit line in a time window.
+
+    Guard Clauses:
+        - If events is None or empty, returns (0, {}).
+    """
+    if not events:
+        return 0, {}
+
+    line_counts: dict[str, int] = {}
+    total = 0
+
+    for ev in events:
+        t = float(ev.get("timestamp_s", 0.0))
+        if t < start_s:
+            continue
+        if t > end_s:
+            break
+
+        param = str(ev.get("param", "")).lower()
+        inp_type = str(ev.get("type", "")).lower()
+
+        if "queue" in inp_type or "train" in inp_type:
+            if any(nm in param for nm in NON_MILITARY_UNITS) or not param.strip():
+                continue
+
+            matched = False
+            for unit_key, canonical_line in UNIT_LINE_MAP.items():
+                if unit_key in param:
+                    line_counts[canonical_line] = line_counts.get(canonical_line, 0) + 1
+                    total += 1
+                    matched = True
+                    break
+
+            if not matched and param and param != "none":
+                unit_label = f"Unit ({param.title()})"
+                line_counts[unit_label] = line_counts.get(unit_label, 0) + 1
+                total += 1
+
+    return total, line_counts
+
+
 def calculate_composition_focus(
     events: list[dict[str, Any]] | None,
     start_s: float,
@@ -214,24 +341,7 @@ def calculate_composition_focus(
     if not events:
         return 1.0, [], {}, False
 
-    line_counts: dict[str, int] = {}
-
-    for ev in events:
-        t = float(ev.get("timestamp_s", 0.0))
-        if t < start_s:
-            continue
-        if t > end_s:
-            break
-
-        param = str(ev.get("param", "")).lower()
-        inp_type = str(ev.get("type", "")).lower()
-
-        if "queue" in inp_type:
-            for unit_key, canonical_line in UNIT_LINE_MAP.items():
-                if unit_key in param:
-                    line_counts[canonical_line] = line_counts.get(canonical_line, 0) + 1
-                    break
-
+    _, line_counts = extract_military_units(events, start_s, end_s)
     distinct_lines = sorted(line_counts.keys())
     num_lines = len(distinct_lines)
 

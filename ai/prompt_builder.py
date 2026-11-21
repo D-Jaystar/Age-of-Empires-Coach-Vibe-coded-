@@ -86,20 +86,22 @@ You review recorded game telemetry to give sharp, concrete, and highly actionabl
 {few_shot}
 
 ### REQUIRED OUTPUT FORMAT:
-You MUST format your feedback into standard Markdown with these section headers:
+For EVERY age reached in the match (Dark Age, Feudal Age, Castle Age, and Imperial Age if reached):
+You MUST provide:
+1. A Markdown table with EXACTLY 3 Tips on the left and 3 Tops on the right:
+   | 💡 3 Tips (Verbeterpunten / Areas to Improve) | 🏆 3 Tops (Sterke Punten / Key Strengths) |
+   | :--- | :--- |
+   | • **Tip 1:** [Concrete improvement with timing/number] | • **Top 1:** [Standout execution or clean benchmark] |
+   | • **Tip 2:** [Concrete improvement with timing/number] | • **Top 2:** [Standout execution or clean benchmark] |
+   | • **Tip 3:** [Concrete improvement with timing/number] | • **Top 3:** [Standout execution or clean benchmark] |
+2. Followed by bullet points and mini-checklists explaining the tactical cause-and-effect, farm engine pacing, military composition synergy, and situational counters.
+
+Structure your response with these exact top-level section headers:
 ## Dark Age
-(Bullet points covering: Feudal click timing vs benchmark, TC idle time & boar lure panic gaps, Loom timing, resource balance, checklist)
-
 ## Feudal Age
-(Bullet points covering: Opening strategy execution, early gold efficiency, Farm seeding rate & food engine / water fish macro, Wheelbarrow timing, military production)
-
 ## Castle Age
-(Bullet points covering: Castle arrival timing, unit composition focus score vs counter adaptations, Blacksmith upgrades queued during aging up, production building scaling, Town Center additions)
-
-## Imperial Age
-(ONLY include this section if the match reached Imperial Age according to the telemetry; otherwise omit it entirely!)
-
-(If a specific player question was asked, include a section: `## Player Focus Point` addressing it directly!)
+## Imperial Age (ONLY include if the match reached Imperial Age according to the telemetry; otherwise omit it!)
+## Player Focus Point (Include if a specific player question was asked)
 """
 
 
@@ -130,8 +132,22 @@ Please address this question directly in a dedicated `## Player Focus Point` sec
 """
 
     matchup_section = ""
+    context_section = ""
     try:
         data = json.loads(cleaned)
+        meta = data.get("metadata", {})
+        gmode = meta.get("gamemode")
+        mpos = meta.get("map_position")
+        if gmode or mpos:
+            context_section = f"""
+### MATCH FORMAT & ROLE CONTEXT:
+- **Game Mode:** {gmode or 'Standard Match'}
+- **Map Position:** {mpos or 'Unspecified'}
+- **Strategic Impact:**
+  * Pocket role: Prioritize fast Castle Age timing, cavalry mobility, economy boom, and flank assistance. Do NOT penalize absence of early Feudal aggression.
+  * Flank role: Prioritize early Feudal aggression, archery range/scout timing, forward walling, and surviving early enemy pressure.
+  * 1v1 role: Direct matchup tempo, resource denial, and proactive counters.
+"""
         tp_player = data.get("target_player", {}).get("player", {})
         tp_name = tp_player.get("name", "Analyzed Player")
         tp_civ = tp_player.get("civilization", "Unknown")
@@ -147,6 +163,7 @@ Please address this question directly in a dedicated `## Player Focus Point` sec
 
     return f"""Here is the deterministic match telemetry and heuristic analysis for an Age of Empires II match:
 
+{context_section}
 {matchup_section}
 
 ### RAW MATCH TELEMETRY:

@@ -100,42 +100,72 @@ def calculate_performance_scores(
     )
 
     # -----------------------------------------------------------------------
-    # 3. Military Value & Focus Score (0 - 100%)
+    # 3. Multi-Layer Military Value & Focus Score (0 - 100%)
     # -----------------------------------------------------------------------
-    # Count total military units produced
-    total_mil_units = 0
-    distinct_lines = 1
-    focus_factor = 0.8
+    # Layer 1: Aggregate unit counts across all game ages
+    military_by_age: dict[str, int] = {}
+    all_unit_lines: dict[str, int] = {}
 
+    feud_units = 0
+    if feudal_age:
+        feud_units = feudal_age.military_units_trained or sum(feudal_age.unit_line_counts.values())
+        if feud_units > 0:
+            military_by_age["Feudal Age"] = feud_units
+        for line, cnt in feudal_age.unit_line_counts.items():
+            all_unit_lines[line] = all_unit_lines.get(line, 0) + cnt
+
+    castle_units = 0
     if castle_age:
-        if castle_age.unit_line_counts:
-            total_mil_units += sum(castle_age.unit_line_counts.values())
-        distinct_lines = len(castle_age.distinct_unit_lines)
+        castle_units = castle_age.military_units_trained or sum(castle_age.unit_line_counts.values())
+        if castle_units > 0:
+            military_by_age["Castle Age"] = castle_units
+        for line, cnt in castle_age.unit_line_counts.items():
+            all_unit_lines[line] = all_unit_lines.get(line, 0) + cnt
+
+    imp_units = 0
+    if imperial_age:
+        imp_units = imperial_age.military_units_trained or sum(imperial_age.unit_line_counts.values())
+        if imp_units > 0:
+            military_by_age["Imperial Age"] = imp_units
+        for line, cnt in imperial_age.unit_line_counts.items():
+            all_unit_lines[line] = all_unit_lines.get(line, 0) + cnt
+
+    total_mil_units = feud_units + castle_units + imp_units
+    top_military_lines = dict(sorted(all_unit_lines.items(), key=lambda x: x[1], reverse=True))
+
+    # Layer 2: Composition Focus Evaluation
+    if castle_age:
         focus_factor = castle_age.composition_focus_score
     elif feudal_age:
-        # Feudal opening military estimate
-        if feudal_age.opening_strategy != "none":
-            focus_factor = 0.85
-            total_mil_units += 4
-        else:
-            focus_factor = 0.5
+        focus_factor = 0.85 if feudal_age.opening_strategy != "none" else 0.5
+    else:
+        focus_factor = 0.5
 
-    # Component A: Composition Focus (Weight: 50%)
     comp_comp = round(focus_factor * 100.0, 1)
 
-    # Component B: Military Production Volume (Weight: 30%)
-    if total_mil_units >= 25:
+    # Layer 3: Military Production Volume & Pace (relative to match duration)
+    post_dark_start = (
+        dark_age.feudal_complete_s
+        or dark_age.feudal_click_s
+        or 600.0
+    )
+    mil_duration_min = max(1.0, (game_duration_s - post_dark_start) / 60.0)
+    production_rate = total_mil_units / mil_duration_min
+
+    if production_rate >= 2.0 or total_mil_units >= 40:
         volume_comp = 100.0
-    elif total_mil_units >= 15:
+    elif production_rate >= 1.2 or total_mil_units >= 20:
         volume_comp = 85.0
-    elif total_mil_units >= 6:
-        volume_comp = 65.0
+    elif production_rate >= 0.7 or total_mil_units >= 10:
+        volume_comp = 70.0
+    elif total_mil_units >= 4:
+        volume_comp = 50.0
     elif total_mil_units >= 1:
-        volume_comp = 45.0
+        volume_comp = 35.0
     else:
         volume_comp = 15.0
 
-    # Component C: Military Tech Scaling (Weight: 20%)
+    # Layer 4: Military Tech & Blacksmith Upgrade Alignment
     upgrades_count = 0
     if castle_age and castle_age.blacksmith_upgrades:
         upgrades_count += len(castle_age.blacksmith_upgrades)
@@ -145,14 +175,14 @@ def calculate_performance_scores(
     if upgrades_count >= 4:
         tech_comp = 100.0
     elif upgrades_count >= 2:
-        tech_comp = 75.0
+        tech_comp = 80.0
     elif upgrades_count >= 1:
-        tech_comp = 50.0
+        tech_comp = 60.0
     else:
-        tech_comp = 20.0
+        tech_comp = 25.0
 
     military_value = round(
-        max(0.0, min(100.0, 0.50 * comp_comp + 0.30 * volume_comp + 0.20 * tech_comp)),
+        max(0.0, min(100.0, 0.40 * comp_comp + 0.35 * volume_comp + 0.25 * tech_comp)),
         1,
     )
 
@@ -162,4 +192,6 @@ def calculate_performance_scores(
         eco_efficiency_score=eco_efficiency,
         military_value_score=military_value,
         total_military_units=total_mil_units,
+        military_by_age=military_by_age,
+        top_military_lines=top_military_lines,
     )

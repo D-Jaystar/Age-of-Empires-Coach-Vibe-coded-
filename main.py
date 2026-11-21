@@ -29,6 +29,7 @@ from analyzer.military_heuristics import (
     detect_early_gold,
     detect_opening_strategy,
     extract_blacksmith_upgrades,
+    extract_military_units,
 )
 from analyzer.performance_scorer import calculate_performance_scores
 from analyzer.spatial_heuristics import (
@@ -165,6 +166,45 @@ def _select_target_player(
     return target
 
 
+def _prompt_gamemode(detected_mode: str, interactive: bool = True, lang: str = "nl") -> str:
+    """Prompt user for gamemode, defaulting to detected value from replay."""
+    if not interactive:
+        return detected_mode
+
+    prompt_msg = (
+        f"\n🎮 [bold yellow]Which game mode did you play? [1] 1v1 Random Map  [2] Team Game  [3] Empire Wars  [4] Arena / Closed map (Enter for '{detected_mode}'): [/bold yellow]"
+        if lang == "en"
+        else f"\n🎮 [bold yellow]Welke gamemode speelde je? [1] 1v1 Random Map  [2] Team Game  [3] Empire Wars  [4] Arena / Closed map (Enter voor '{detected_mode}'): [/bold yellow]"
+    )
+    ans = console.input(prompt_msg).strip()
+    mapping = {
+        "1": "1v1 Random Map",
+        "2": "Team Game",
+        "3": "Empire Wars",
+        "4": "Arena / Closed map",
+    }
+    return mapping.get(ans, ans if ans else detected_mode)
+
+
+def _prompt_map_position(default_pos: str, is_team_game: bool = False, interactive: bool = True, lang: str = "nl") -> str:
+    """Prompt user for their map position (Pocket vs Flank vs Solo)."""
+    if not interactive:
+        return default_pos
+
+    prompt_msg = (
+        f"\n🗺️ [bold yellow]What was your map position? [1] Flank  [2] Pocket  [3] Solo (1v1) (Enter for '{default_pos}'): [/bold yellow]"
+        if lang == "en"
+        else f"\n🗺️ [bold yellow]Wat was je positie op de kaart? [1] Flank  [2] Pocket  [3] Solo (1v1) (Enter voor '{default_pos}'): [/bold yellow]"
+    )
+    ans = console.input(prompt_msg).strip()
+    mapping = {
+        "1": "Flank",
+        "2": "Pocket",
+        "3": "Solo (1v1)",
+    }
+    return mapping.get(ans, ans if ans else default_pos)
+
+
 def build_telemetry_report(
     metadata_dict: dict[str, Any],
     target_player_dict: dict[str, Any],
@@ -173,12 +213,15 @@ def build_telemetry_report(
     gaia_objects: list[dict[str, Any]],
     raw_inputs: list[dict[str, Any]],
     game_duration_s: float,
+    gamemode: str | None = None,
+    map_position: str | None = None,
 ) -> ParsedReplayReport:
     """Orchestrate all heuristic analyzers and assemble a ParsedReplayReport DTO."""
     p_num = target_player_dict["number"]
     p_uptimes = uptimes_by_player.get(p_num, {})
 
     is_water = metadata_dict.get("is_water_map", False) or detect_water_map_objects(gaia_objects)
+    detected_gmode = gamemode or metadata_dict.get("gamemode", "Random Map")
     metadata = MatchMetadata(
         map_name=metadata_dict["map_name"],
         map_size=metadata_dict["map_size"],
@@ -188,6 +231,9 @@ def build_telemetry_report(
         is_hybrid_map=metadata_dict.get("is_hybrid_map", False),
         game_version=metadata_dict.get("game_version", "Unknown"),
         save_version=metadata_dict.get("save_version", 0.0),
+        gamemode=detected_gmode,
+        diplomacy=metadata_dict.get("diplomacy"),
+        map_position=map_position,
     )
 
     tc_info = get_civilization(target_player_dict["civilization"]) or {}
@@ -237,6 +283,7 @@ def build_telemetry_report(
         opening = detect_opening_strategy(feudal_events, dark_events)
         f_farm, tot_farms, f_rate = detect_farm_timing(raw_inputs, feudal_up, castle_up or game_duration_s)
         wb_time, wb_vils = detect_wheelbarrow_timing(raw_inputs)
+        feud_mil_count, feud_mil_lines = extract_military_units(raw_inputs, feudal_up, castle_up or game_duration_s)
 
         feudal_metrics = FeudalAgeMetrics(
             castle_click_s=c_click,
@@ -250,6 +297,8 @@ def build_telemetry_report(
             wheelbarrow_vil_count=wb_vils,
             tc_gather_point_description=check_tc_gather_point(raw_inputs, player_info.tc_x, player_info.tc_y, feudal_up, castle_up or game_duration_s),
             military_buildings=count_military_buildings(raw_inputs, feudal_up, castle_up or game_duration_s),
+            military_units_trained=feud_mil_count,
+            unit_line_counts=feud_mil_lines,
         )
 
     # 3. Castle & Imperial Age
@@ -263,6 +312,7 @@ def build_telemetry_report(
         score, lines, counts, is_scattered = calculate_composition_focus(raw_inputs, castle_up, imp_up or game_duration_s)
         prod_scaling = count_production_scaling(raw_inputs, castle_up, imp_up or game_duration_s)
         tc_count = 1 + prod_scaling.get("Town Center", 0)
+        castle_mil_count = sum(counts.values())
 
         castle_metrics = CastleAgeMetrics(
             imperial_click_s=i_click,
@@ -270,6 +320,7 @@ def build_telemetry_report(
             composition_focus_score=score,
             distinct_unit_lines=lines,
             unit_line_counts=counts,
+            military_units_trained=castle_mil_count,
             production_buildings_added=prod_scaling,
             blacksmith_upgrades=extract_blacksmith_upgrades(raw_inputs, castle_up, imp_up or game_duration_s),
             tc_count=tc_count,
@@ -283,7 +334,13 @@ def build_telemetry_report(
                 for ev in imp_events if str(ev.get("type", "")).lower() == "research"
             ]
             trebs = sum(1 for ev in imp_events if "trebuchet" in str(ev.get("param", "")).lower())
-            imperial_metrics = ImperialAgeMetrics(key_upgrades=key_upgrades, trebuchet_count=trebs)
+            imp_mil_count, imp_mil_lines = extract_military_units(raw_inputs, imp_up, game_duration_s)
+            imperial_metrics = ImperialAgeMetrics(
+                key_upgrades=key_upgrades,
+                trebuchet_count=trebs,
+                military_units_trained=imp_mil_count,
+                unit_line_counts=imp_mil_lines,
+            )
 
     # 4. Opponents summary
     opponents: list[OpponentSummary] = []
@@ -346,11 +403,14 @@ def convert(
     md_path = export_markdown(report, output_dir, stem)
 
     sc = report.target_player.scores
+    by_age_str = ", ".join(f"{age.split()[0]}: {cnt}" for age, cnt in sc.military_by_age.items()) if sc and sc.military_by_age else (f"{sc.total_military_units}" if sc else "")
+    top_lines = ", ".join(f"{line} ({cnt})" for line, cnt in list(sc.top_military_lines.items())[:3]) if sc else ""
+    lines_str = f"\n  ↳ Top Lines: {top_lines}" if top_lines else ""
     sc_str = (
         f"\n\n[bold yellow]Performance Benchmarks:[/bold yellow]\n"
         f"• TC Uptime (Dark Age): [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] (Idle: {sc.tc_idle_pct}%)\n"
         f"• Economy Efficiency:   [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
-        f"• Military Focus/Value: [bold cyan]{sc.military_value_score}%[/bold cyan] ({sc.total_military_units} units)"
+        f"• Military Focus/Value: [bold cyan]{sc.military_value_score}%[/bold cyan] ({sc.total_military_units} units: {by_age_str}){lines_str}"
     ) if sc else ""
 
     console.print(
@@ -369,6 +429,8 @@ def convert(
 def coach(
     replay_path: Optional[str] = typer.Argument(None, help="Path to .aoe2record replay file"),
     player: Optional[str] = typer.Option(None, "--player", "-p", help="Target player name"),
+    gamemode: Optional[str] = typer.Option(None, "--gamemode", "-g", help="Game mode (e.g. '1v1 Random Map', 'Team Game', 'Arena')"),
+    position: Optional[str] = typer.Option(None, "--position", "--pos", help="Map position ('Flank', 'Pocket', 'Solo (1v1)')"),
     lang: str = typer.Option("nl", "--lang", "-l", help="Language: 'nl' or 'en'"),
     prompt: Optional[str] = typer.Option(None, "--prompt", "-q", help="Optional player question or focus point"),
     output_dir: str = typer.Option("output", "--output-dir", "-o", help="Output directory"),
@@ -388,6 +450,15 @@ def coach(
     parsed_data, val_path = _load_and_parse_match(replay_path, lang=lang)
     target_player = _select_target_player(parsed_data["players"], player, interactive=True, lang=lang)
 
+    # Gamemode and map position prompts
+    meta_dict = parsed_data["metadata"]
+    detected_mode = meta_dict.get("gamemode") or ("Team Game" if len(parsed_data["players"]) > 2 else "1v1 Random Map")
+    actual_gamemode = gamemode or _prompt_gamemode(detected_mode, interactive=True, lang=lang)
+
+    is_tg = (len(parsed_data["players"]) > 2) or ("team" in actual_gamemode.lower())
+    detected_pos = "Flank" if is_tg else "Solo (1v1)"
+    actual_position = position or _prompt_map_position(detected_pos, is_team_game=is_tg, interactive=True, lang=lang)
+
     user_question = prompt
     if not user_question:
         q_msg = (
@@ -405,6 +476,7 @@ def coach(
     report = build_telemetry_report(
         parsed_data["metadata"], target_player, parsed_data["players"],
         parsed_data["uptimes"], parsed_data["gaia"], raw_inputs, parsed_data["metadata"]["game_duration_s"],
+        gamemode=actual_gamemode, map_position=actual_position,
     )
 
     stem = val_path.stem
@@ -440,22 +512,28 @@ def coach(
     if report.target_player.scores:
         sc = report.target_player.scores
         idle_s = report.target_player.dark_age.total_idle_tc_s
+        by_age_str = ", ".join(f"{age.split()[0]}: {cnt}" for age, cnt in sc.military_by_age.items()) if sc.military_by_age else f"{sc.total_military_units}"
+        top_lines_str = ", ".join(f"{line} ({cnt})" for line, cnt in list(sc.top_military_lines.items())[:3])
         if lang == "en":
+            lines_desc = f"\n  [dim]↳ Top Unit Lines: {top_lines_str}[/dim]" if top_lines_str else ""
             content = (
+                f"• [bold]Match Format & Role:[/bold]           [bold magenta]{report.metadata.gamemode}[/bold magenta] ({report.metadata.map_position or 'Standard'})\n"
                 f"• [bold]Town Center Uptime (Dark Age):[/bold]  [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] "
                 f"([dim]Idle: {sc.tc_idle_pct}% | {format_timestamp(idle_s)} min[/dim])\n"
                 f"• [bold]Economy Efficiency Score:[/bold]       [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
                 f"• [bold]Military Value & Focus Score:[/bold]   [bold cyan]{sc.military_value_score}%[/bold cyan] "
-                f"([dim]{sc.total_military_units} units produced[/dim])"
+                f"([dim]{sc.total_military_units} units total: {by_age_str}[/dim]){lines_desc}"
             )
             title = "📊 Match Performance Benchmarks"
         else:
+            lines_desc = f"\n  [dim]↳ Belangrijkste Eenheden: {top_lines_str}[/dim]" if top_lines_str else ""
             content = (
+                f"• [bold]Wedstrijd Format & Rol:[/bold]         [bold magenta]{report.metadata.gamemode}[/bold magenta] ({report.metadata.map_position or 'Standaard'})\n"
                 f"• [bold]Town Center Uptime (Dark Age):[/bold]  [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] "
                 f"([dim]Idle: {sc.tc_idle_pct}% | {format_timestamp(idle_s)} min[/dim])\n"
                 f"• [bold]Economie Efficiëntie Score:[/bold]     [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
                 f"• [bold]Militaire Waarde & Focus:[/bold]        [bold cyan]{sc.military_value_score}%[/bold cyan] "
-                f"([dim]{sc.total_military_units} eenheden geproduceerd[/dim])"
+                f"([dim]{sc.total_military_units} eenheden totaal: {by_age_str}[/dim]){lines_desc}"
             )
             title = "📊 Wedstrijd Prestatie Scores"
         console.print(Panel(content, title=title, border_style="cyan"))

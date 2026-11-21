@@ -53,27 +53,41 @@ TACTICAL_ADAPTATION_RULES = """
 """
 
 FEW_SHOT_COACHING_EXAMPLE_NL = """
-### VOORBEELD VAN EEN GOED COACHING RAPPORT (NL):
+### VOORBEELD VAN EEN GOED COACHING RAPPORT MET 3 TIPS & 3 TOPS (NL):
 
 ## Dark Age
-* **Feudal Click Timing:** Je klikte naar Feudal Age op 08:45 (525s) met 21 villagers. Voor een Frank Scouts opening mik je op 07:05–07:15.
-* **TC Idle Time:** Je hebt 48.5 seconden totale idle TC time opgelopen, met een piek van 35s rond 04:30. Zorg dat je zwijn naar het TC rent vóórdat je schapen op zijn.
-* **Vroege Goudverzameling:** Je stuurde 3 villagers naar goud in Dark Age. Bij een Scouts rush heb je 0 goud nodig; die hadden op hout of bessen moeten staan voor eerdere boerderijen.
+
+| 💡 3 Tips (Verbeterpunten) | 🏆 3 Tops (Sterke Punten) |
+| :--- | :--- |
+| • **Tip 1:** Breng je Feudal click omlaag naar ~07:15 (435s) in plaats van 08:35 (515s) voor een vlottere opening. | • **Top 1:** Vrijwel vlekkeloze TC uptime met slechts 0.6s totale idle time (99.9% uptime). |
+| • **Tip 2:** Lok je schapen direct onder het TC (binnen 5 tiles) om villager looptijd te minimaliseren. | • **Top 2:** Loom perfect getimed op 06:53 vlak voor het klikken, waardoor je vils continu produceerden. |
+| • **Tip 3:** Op Four Lakes: plaats je shoreline Dock eerder rond 03:15 voor eerdere deep-fish inkomsten. | • **Top 3:** Uitstekende resourcebalans met 0 vils verspild op goud/steen tijdens je Dark Age food rush. |
 
 ## Feudal Age
-* **Opening:** 1 Stable geopend voor Scouts. Goede keuze voor Franken.
-* **Boerderijen:** Eerste boerderij pas op 13:20. Zorg dat je rond minuut 10:00 je eerste boerderijen plaatst om je voedselinkomen voor Castle Age op te bouwen.
+
+| 💡 3 Tips (Verbeterpunten) | 🏆 3 Tops (Sterke Punten) |
+| :--- | :--- |
+| • **Tip 1:** Start je eerste boerderij rond minuut 10:00 om je landbouwmotor tijdig op te starten. | • **Top 1:** Supersnelle Castle Age click op 14:58 (898s) waarmee je de tegenstanders voorbleef. |
+| • **Tip 2:** Onderzoek Wheelbarrow rond villager 35-40 in plaats van uitstellen tot minuut 22:38 (53 vils). | • **Top 2:** Slim gebruikgemaakt van deep fish macro om razendsnel naar Castle Age te gaan. |
+| • **Tip 3:** Voeg tijdig een tweede productiegebouw toe om je militaire eenheden te continueren. | • **Top 3:** Strakke opening discipline met 2 Stables al geplaatst voor een onmiddellijke Knight power-spike. |
 """
 
 FEW_SHOT_COACHING_EXAMPLE_EN = """
-### EXAMPLE OF A STRONG COACHING REPORT (EN):
+### EXAMPLE OF A STRONG COACHING REPORT WITH 3 TIPS & 3 TOPS (EN):
 
 ## Dark Age
-* **Feudal Click Timing:** Clicked Feudal Age at 08:45 (525s) with 21 villagers. For a Frank Scouts opening, target 07:05–07:15.
-* **TC Idle Time:** 48.5s total idle time, peaking around 04:30 near your first boar lure. Lure earlier to prevent gaps.
-* **Resource Balance:** 3 villagers on gold in Dark Age. Scout openings need 0 gold in Dark Age; keep them on wood/food.
+
+| 💡 3 Tips (Areas to Improve) | 🏆 3 Tops (Key Strengths) |
+| :--- | :--- |
+| • **Tip 1:** Accelerate your Feudal click towards ~07:15 (435s) instead of 08:35 (515s) for cleaner tempo. | • **Top 1:** Outstanding TC uptime with only 0.6s total idle time (99.9% active queue). |
+| • **Tip 2:** Harvest sheep directly underneath the TC (< 5 tiles) to eliminate villager walking lag. | • **Top 2:** Loom delayed appropriately until 06:53 right before clicking, keeping vils pumping. |
+| • **Tip 3:** On Four Lakes: place your Dock earlier at ~03:15 to access deep fish before aging up. | • **Top 3:** Zero early idle gold mining, prioritizing wood and food for your core opening. |
 
 ## Feudal Age
-* **Opening:** 1 Stable Scouts. Good civ synergy with Frank cavalry HP bonus.
-* **Farms:** First farm delayed until 13:20. Begin seeding farms around 10:00 to fuel Castle Age transition.
+
+| 💡 3 Tips (Areas to Improve) | 🏆 3 Tops (Key Strengths) |
+| :--- | :--- |
+| • **Tip 1:** Seed your first farm around minute 10:00 to kickstart your land farming engine. | • **Top 1:** Lightning-fast Castle click at 14:58 (898s), outpacing all opponents to the next age. |
+| • **Tip 2:** Research Wheelbarrow at 35-40 villagers rather than delaying until 22:38 (53 vils). | • **Top 2:** Excellent water boom execution, funding Castle click entirely off deep fish. |
+| • **Tip 3:** Add a secondary production building early to sustain military tempo. | • **Top 3:** Proactive infrastructure with 2 Stables queued early to hit hard with Knights. |
 """

@@ -16,6 +16,9 @@ class MatchMetadata(BaseModel):
     is_hybrid_map: bool
     game_version: str
     save_version: float
+    gamemode: str = "Random Map"
+    diplomacy: str | None = None
+    map_position: str | None = None
 
 
 class PlayerInfo(BaseModel):
@@ -78,6 +81,8 @@ class FeudalAgeMetrics(BaseModel):
     wheelbarrow_vil_count: int | None = None
     tc_gather_point_description: str | None = None
     military_buildings: dict[str, int] = Field(default_factory=dict)
+    military_units_trained: int = 0
+    unit_line_counts: dict[str, int] = Field(default_factory=dict)
 
 
 class CastleAgeMetrics(BaseModel):
@@ -87,6 +92,7 @@ class CastleAgeMetrics(BaseModel):
     composition_focus_score: float
     distinct_unit_lines: list[str] = Field(default_factory=list)
     unit_line_counts: dict[str, int] = Field(default_factory=dict)
+    military_units_trained: int = 0
     production_buildings_added: dict[str, int] = Field(default_factory=dict)
     blacksmith_upgrades: list[BuildOrderEntry] = Field(default_factory=list)
     tc_count: int
@@ -95,6 +101,8 @@ class CastleAgeMetrics(BaseModel):
 
 class ImperialAgeMetrics(BaseModel):
     """Metrics collected during the Imperial Age."""
+    military_units_trained: int = 0
+    unit_line_counts: dict[str, int] = Field(default_factory=dict)
     key_upgrades: list[BuildOrderEntry] = Field(default_factory=list)
     trebuchet_count: int | None = None
 
@@ -120,6 +128,8 @@ class PerformanceScores(BaseModel):
     eco_efficiency_score: float
     military_value_score: float
     total_military_units: int = 0
+    military_by_age: dict[str, int] = Field(default_factory=dict)
+    top_military_lines: dict[str, int] = Field(default_factory=dict)
 
 
 class PlayerTelemetry(BaseModel):
