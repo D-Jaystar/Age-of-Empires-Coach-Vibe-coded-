@@ -132,6 +132,36 @@ class PerformanceScores(BaseModel):
     top_military_lines: dict[str, int] = Field(default_factory=dict)
 
 
+class EconomyMultiLayer(BaseModel):
+    """Chunked analytical layer for economy continuity, allocation, and scaling."""
+    continuity: dict[str, Any] = Field(default_factory=dict)
+    resource_allocation: dict[str, Any] = Field(default_factory=dict)
+    spatial_efficiency: dict[str, Any] = Field(default_factory=dict)
+    eco_scaling: dict[str, Any] = Field(default_factory=dict)
+
+
+class MilitaryMultiLayer(BaseModel):
+    """Chunked analytical layer for military volume, composition, and upgrades."""
+    volume_pacing: dict[str, Any] = Field(default_factory=dict)
+    composition_synergy: dict[str, Any] = Field(default_factory=dict)
+    upgrade_alignment: dict[str, Any] = Field(default_factory=dict)
+    production_infrastructure: dict[str, Any] = Field(default_factory=dict)
+
+
+class StrategyMultiLayer(BaseModel):
+    """Chunked analytical layer for format, role, opening, and tactical counters."""
+    format_and_role: dict[str, Any] = Field(default_factory=dict)
+    opening_execution: dict[str, Any] = Field(default_factory=dict)
+    tactical_adaptations: dict[str, Any] = Field(default_factory=dict)
+
+
+class MultiLayerAnalysis(BaseModel):
+    """Holistic multi-layer breakdown dividing complex match data into focused chunks."""
+    economy: EconomyMultiLayer = Field(default_factory=EconomyMultiLayer)
+    military: MilitaryMultiLayer = Field(default_factory=MilitaryMultiLayer)
+    strategy: StrategyMultiLayer = Field(default_factory=StrategyMultiLayer)
+
+
 class PlayerTelemetry(BaseModel):
     """Full per-age telemetry bundle for the target player."""
     player: PlayerInfo
@@ -140,6 +170,7 @@ class PlayerTelemetry(BaseModel):
     castle_age: CastleAgeMetrics | None = None
     imperial_age: ImperialAgeMetrics | None = None
     scores: PerformanceScores | None = None
+    multi_layer: MultiLayerAnalysis | None = None
 
 
 class ParsedReplayReport(BaseModel):

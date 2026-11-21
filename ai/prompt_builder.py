@@ -85,6 +85,12 @@ You review recorded game telemetry to give sharp, concrete, and highly actionabl
 
 {few_shot}
 
+### MULTI-LAYER COGNITIVE DECOMPOSITION:
+To provide exceptionally thorough coaching without cognitive rush, analyze the telemetry systematically through these 3 analytical layers:
+- **Layer 1: Economy Diagnostics** (Continuity/TC Uptime, Resource Distribution, Farm Engine & Fish Macro, Spatial Micro/Walking Distance, Eco Scaling/Wheelbarrow).
+- **Layer 2: Military Diagnostics** (Volume & Pacing across all ages, Unit Line Synergy, Upgrade Alignment & Blacksmith Armor/Attack, Production Infrastructure).
+- **Layer 3: Strategy & Matchup Diagnostics** (Game Mode & Map Role Flank/Pocket/1v1, Opening Execution, Tactical Counters vs Opponent Rosters).
+
 ### REQUIRED OUTPUT FORMAT:
 For EVERY age reached in the match (Dark Age, Feudal Age, Castle Age, and Imperial Age if reached):
 You MUST provide:

@@ -31,6 +31,7 @@ from analyzer.military_heuristics import (
     extract_blacksmith_upgrades,
     extract_military_units,
 )
+from analyzer.multi_layer_analyzer import build_multi_layer_analysis
 from analyzer.performance_scorer import calculate_performance_scores
 from analyzer.spatial_heuristics import (
     check_gather_distances,
@@ -367,6 +368,16 @@ def build_telemetry_report(
         )
 
     scores = calculate_performance_scores(dark_metrics, feudal_metrics, castle_metrics, imperial_metrics, game_duration_s)
+    multi_layer = build_multi_layer_analysis(
+        metadata=metadata,
+        player_info=player_info,
+        dark_age=dark_metrics,
+        feudal_age=feudal_metrics,
+        castle_age=castle_metrics,
+        imperial_age=imperial_metrics,
+        scores=scores,
+        opponents=opponents,
+    )
     telemetry = PlayerTelemetry(
         player=player_info,
         dark_age=dark_metrics,
@@ -374,6 +385,7 @@ def build_telemetry_report(
         castle_age=castle_metrics,
         imperial_age=imperial_metrics,
         scores=scores,
+        multi_layer=multi_layer,
     )
 
     return ParsedReplayReport(metadata=metadata, target_player=telemetry, opponents=opponents)

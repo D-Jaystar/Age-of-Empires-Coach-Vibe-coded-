@@ -669,3 +669,28 @@ def test_format_matchup_overview() -> None:
     assert "SubjectTMT" in overview
     assert "Franks" in overview
     assert "NO PALADIN" in overview
+
+
+def test_build_multi_layer_analysis() -> None:
+    from analyzer.multi_layer_analyzer import build_multi_layer_analysis
+    report = _create_sample_report()
+    tp = report.target_player
+
+    ml = build_multi_layer_analysis(
+        metadata=report.metadata,
+        player_info=tp.player,
+        dark_age=tp.dark_age,
+        feudal_age=tp.feudal_age,
+        castle_age=tp.castle_age,
+        imperial_age=tp.imperial_age,
+        scores=tp.scores,
+        opponents=report.opponents,
+    )
+
+    assert ml is not None
+    assert "tc_uptime_pct" in ml.economy.continuity
+    assert "food_engine_type" in ml.economy.resource_allocation
+    assert "volume_rating" in ml.military.volume_pacing
+    assert "army_archetype" in ml.military.composition_synergy
+    assert "expected_role_responsibility" in ml.strategy.format_and_role
+

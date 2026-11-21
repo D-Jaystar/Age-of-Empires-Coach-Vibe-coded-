@@ -220,7 +220,33 @@ def export_markdown(
                 f"{uu_str} |"
             )
 
-    # 5. Chronological Build Order (First 25)
+    # 5. Multi-Layer Diagnostics
+    if tp.multi_layer:
+        ml = tp.multi_layer
+        md_lines.extend([
+            "",
+            "---",
+            "## 🔬 Multi-Layer Match Diagnostics",
+            "",
+            "### 📈 Economy Diagnostic Layers",
+            f"- **Continuity:** TC Uptime: **{ml.economy.continuity.get('tc_uptime_pct', 0)}%** (Idle: {ml.economy.continuity.get('tc_idle_pct', 0)}%), Vils at Click: {ml.economy.continuity.get('vils_at_feudal_click', 'N/A')}, Loom: {ml.economy.continuity.get('loom_assessment', 'N/A')}",
+            f"- **Resource Allocation:** Food Engine: **{ml.economy.resource_allocation.get('food_engine_type', 'N/A')}**, Farms Built: {ml.economy.resource_allocation.get('total_farms_built', 0)}, Build Rate: {ml.economy.resource_allocation.get('farm_build_rate_per_min', 0)} farms/min",
+            f"- **Spatial Efficiency:** {ml.economy.spatial_efficiency.get('walking_efficiency', 'N/A')}",
+            f"- **Eco Scaling:** Style: **{ml.economy.eco_scaling.get('eco_boom_style', 'N/A')}**, Wheelbarrow: {format_duration(ml.economy.eco_scaling.get('wheelbarrow_time_s')) if ml.economy.eco_scaling.get('wheelbarrow_time_s') else 'None'}",
+            "",
+            "### ⚔️ Military Diagnostic Layers",
+            f"- **Volume & Pacing:** **{ml.military.volume_pacing.get('total_military_units', 0)} units total** ({ml.military.volume_pacing.get('units_per_minute_active', 0)} units/min active) - Rating: **{ml.military.volume_pacing.get('volume_rating', 'N/A')}**",
+            f"- **Composition:** Archetype: **{ml.military.composition_synergy.get('army_archetype', 'N/A')}**, Primary: {ml.military.composition_synergy.get('primary_unit_line', 'N/A')}, Secondary: {ml.military.composition_synergy.get('secondary_unit_line', 'N/A')}",
+            f"- **Upgrades Alignment:** Rating: **{ml.military.upgrade_alignment.get('upgrade_alignment_evaluation', 'N/A')}** ({ml.military.upgrade_alignment.get('total_military_upgrades_count', 0)} techs)",
+            "",
+            "### 🎯 Strategic Matchup Layers",
+            f"- **Format & Role:** Mode: **{ml.strategy.format_and_role.get('gamemode', 'N/A')}**, Position: **{ml.strategy.format_and_role.get('map_position', 'N/A')}**",
+            f"- **Role Focus:** {ml.strategy.format_and_role.get('expected_role_responsibility', 'N/A')}",
+            f"- **Opening Synergy:** **{ml.strategy.opening_execution.get('opening_synergy', 'N/A')}**",
+            f"- **Tactical Counters:** {ml.strategy.tactical_adaptations.get('notable_tactical_counters', 'N/A')}",
+        ])
+
+    # 6. Chronological Build Order (First 25)
     if da.build_order:
         md_lines.extend([
             "",
