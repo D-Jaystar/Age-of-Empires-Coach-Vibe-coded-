@@ -13,31 +13,15 @@ from typing import Optional
 
 from ai.knowledge_base import (
     BUILD_ORDER_BENCHMARKS,
-    CIVILIZATION_PLAYBOOKS,
     FEW_SHOT_COACHING_EXAMPLE_EN,
     FEW_SHOT_COACHING_EXAMPLE_NL,
     TACTICAL_ADAPTATION_RULES,
 )
-from data.civ_database import format_civ_summary, format_matchup_overview, get_civilization
+from data.civ_database import format_civ_summary, format_matchup_overview, load_civilizations
 
 
 def build_system_prompt(language: str = "en", target_civ: str | None = None) -> str:
-    """Build the comprehensive System Prompt configuring the LLM as an expert AoE2 coach.
-
-    Embeds:
-    - Language instructions (Dutch or English)
-    - Civilization playbooks, tech-tree restrictions, and synergies
-    - Build order timing benchmarks
-    - Tactical adaptation rules (anti-cavalry counters, castle upgrades, water boom)
-    - Few-shot coaching example demonstrations
-
-    Args:
-        language: Desired output language ('en' for English, 'nl' for Dutch).
-        target_civ: Name of the player's civilization (optional, highlights civ playbook).
-
-    Returns:
-        str: Fully formatted system instruction.
-    """
+    """Build the comprehensive System Prompt configuring the LLM as an expert AoE2 coach."""
     lang = language.lower().strip() if language else "en"
     is_dutch = (lang == "nl")
 
@@ -61,11 +45,10 @@ def build_system_prompt(language: str = "en", target_civ: str | None = None) -> 
     if target_civ:
         civ_section = format_civ_summary(target_civ)
     else:
-        # Include summary of top civ playbooks
+        db = load_civilizations()
         civ_summaries = []
-        for c_name, c_info in list(CIVILIZATION_PLAYBOOKS.items())[:8]:
-            tech_note = f" (Restriction: {c_info.get('tech_restrictions', 'None')})" if 'tech_restrictions' in c_info else ""
-            civ_summaries.append(f"- **{c_name}**: Opening: {c_info['ideal_opening']} | Core: {c_info['castle_age_core']}{tech_note}")
+        for c_name, c_info in list(db.items())[:8]:
+            civ_summaries.append(f"- **{c_name}**: Focus: {c_info.get('focus', 'General')} | Restriction: {c_info.get('tech_restrictions', 'None')}")
         civ_section = "\n### GENERAL CIVILIZATION PLAYBOOKS:\n" + "\n".join(civ_summaries)
 
     return f"""You are an elite, top-tier Age of Empires II: Definitive Edition (AoE2:DE) coach and competitive analyst.
