@@ -85,6 +85,12 @@ FEW_SHOT_COACHING_EXAMPLE_NL = """
 > | • **Tip 1:** Start rond 10:00 je eerste boerderijen als back-up voor je vismacro. | • **Top 1:** Supersnelle Castle click op 14:58 (898s), sneller dan alle rivalen. |
 > | • **Tip 2:** Onderzoek Wheelbarrow rond vil 35-40 ipv uitstellen tot minuut 22:38. | • **Top 2:** Slim gebruikgemaakt van deep fish macro voor tempo-voordeel. |
 > | • **Tip 3:** Laat beide Stables continu produceren zonder idle gaps. | • **Top 3:** Proactieve infrastructuur met 2 Stables tijdig geplaatst voor Knights. |
+
+## Conclusie & Eindbeoordeling
+
+* **Overall Match Rating:** **A (84.4% - Solid Competitive / 1200-1500 Elo)**
+* **Grootste Kracht:** Uitstekende Dark Age TC uptime (99.9%) gecombineerd met een vlijmscherpe 14:58 Castle Age click timing.
+* **Belangrijkste Focuspunt voor Volgende Match:** Begin tijdig met het aanleggen van boerderijen rond minuut 10:00, zodat je economie niet stilvalt zodra de visvijvers leeg zijn.
 """
 
 FEW_SHOT_COACHING_EXAMPLE_EN = """
@@ -120,4 +126,10 @@ FEW_SHOT_COACHING_EXAMPLE_EN = """
 > | • **Tip 1:** Seed farms around minute 10:00 to transition smoothly off natural fish. | • **Top 1:** Blazing Castle click at 14:58 (898s), outpacing all opponents. |
 > | • **Tip 2:** Research Wheelbarrow at 35-40 villagers rather than delaying to 22:38. | • **Top 2:** Excellent water fish macro converted into immediate Castle tempo. |
 > | • **Tip 3:** Keep production buildings active without queue gaps. | • **Top 3:** Proactive military infrastructure with 2 Stables ready for Knights. |
+
+## Overall Rating & Final Verdict
+
+* **Overall Match Rating:** **A (84.4% - Solid Competitive / 1200-1500 Elo)**
+* **Biggest Strength:** Phenomenal Dark Age TC uptime (99.9%) and an aggressive 14:58 Castle Age timing that outpaced opponents.
+* **#1 Priority for Next Match:** Begin seeding land farms around minute 10:00 to sustain military production once natural fish reserves expire.
 """

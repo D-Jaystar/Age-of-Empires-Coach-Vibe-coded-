@@ -454,6 +454,7 @@ def convert(
     lost_str = f"\n• Casualties/Units Lost: [bold cyan]~{sc.units_lost} lost[/bold cyan]" if sc and sc.units_lost is not None else ""
     sc_str = (
         f"\n\n[bold yellow]Performance Benchmarks:[/bold yellow]\n"
+        f"• Overall Rating:        [bold green]{sc.overall_rating}[/bold green]\n"
         f"• TC Uptime (Dark Age): [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] (Idle: {sc.tc_idle_pct}%)\n"
         f"• Economy Efficiency:   [bold cyan]{sc.eco_efficiency_score}%[/bold cyan]\n"
         f"• Military Focus/Value: [bold cyan]{sc.military_value_score}%[/bold cyan] ({sc.total_military_units} units: {by_age_str}){lines_str}{micro_str}{lost_str}"
@@ -565,6 +566,7 @@ def coach(
             micro_desc = f"\n• [bold]Tactical Micro Score:[/bold]          [bold cyan]{sc.micro_score}%[/bold cyan] ([dim]{sc.micro_apm} micro APM | {sc.micro_style}[/dim])" if sc.micro_score is not None else ""
             lost_desc = f"\n• [bold]Casualties / Units Lost:[/bold]       [bold cyan]~{sc.units_lost} lost[/bold cyan] ([dim]vs {sc.total_military_units} military produced[/dim])" if sc.units_lost is not None else ""
             content = (
+                f"• [bold]Overall Performance Rating:[/bold]   [bold green]{sc.overall_rating}[/bold green]\n"
                 f"• [bold]Match Format & Role:[/bold]           [bold magenta]{report.metadata.gamemode}[/bold magenta] ({report.metadata.map_position or 'Standard'})\n"
                 f"• [bold]Town Center Uptime (Dark Age):[/bold]  [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] "
                 f"([dim]Idle: {sc.tc_idle_pct}% | {format_timestamp(idle_s)} min[/dim])\n"
@@ -578,6 +580,7 @@ def coach(
             micro_desc = f"\n• [bold]Tactische Micro Score:[/bold]         [bold cyan]{sc.micro_score}%[/bold cyan] ([dim]{sc.micro_apm} micro APM | {sc.micro_style}[/dim])" if sc.micro_score is not None else ""
             lost_desc = f"\n• [bold]Verliezen / Units Lost:[/bold]        [bold cyan]~{sc.units_lost} verloren[/bold cyan] ([dim]vs {sc.total_military_units} geproduceerd[/dim])" if sc.units_lost is not None else ""
             content = (
+                f"• [bold]Algemene Prestatie Score:[/bold]     [bold green]{sc.overall_rating}[/bold green]\n"
                 f"• [bold]Wedstrijd Format & Rol:[/bold]         [bold magenta]{report.metadata.gamemode}[/bold magenta] ({report.metadata.map_position or 'Standaard'})\n"
                 f"• [bold]Town Center Uptime (Dark Age):[/bold]  [bold cyan]{sc.tc_uptime_pct}%[/bold cyan] "
                 f"([dim]Idle: {sc.tc_idle_pct}% | {format_timestamp(idle_s)} min[/dim])\n"

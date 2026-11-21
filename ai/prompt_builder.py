@@ -111,12 +111,19 @@ For EVERY age reached in the match (Dark Age, Feudal Age, Castle Age, and Imperi
      > | • **Tip 3:** [Concise 1-line improvement with timing] | • **Top 3:** [Concise 1-line strength with benchmark] |
    - IMPORTANT: The Tips & Tops table is a SIDE-NOTE / summary block. It must NEVER replace or crowd out the detailed, in-depth analytical points above it!
 
+3. **OVERALL RATING & FINAL VERDICT (The Match Conclusion):**
+   - Conclude the entire coaching report with a dedicated final section: `## Conclusie & Eindbeoordeling` (Dutch) or `## Overall Rating & Final Verdict` (English).
+   - State the **Overall Match Rating & Grade** exactly as calculated in the telemetry (e.g. `A (84.4% - Solid Competitive / 1200-1500 Elo)`).
+   - Summarize the **#1 Single Biggest Strength / Win-Condition** executed by the player.
+   - Summarize the **#1 Single Highest-Priority Focus Point / Bottleneck** to practice in their next match.
+
 Structure your response with these exact top-level section headers:
 ## Dark Age
 ## Feudal Age
 ## Castle Age
 ## Imperial Age (ONLY include if the match reached Imperial Age according to the telemetry; otherwise omit it!)
 ## Player Focus Point (Include if a specific player question was asked)
+## Conclusie & Eindbeoordeling (or ## Overall Rating & Final Verdict in English)
 """
 
 

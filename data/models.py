@@ -134,6 +134,9 @@ class PerformanceScores(BaseModel):
     micro_score: float | None = None
     micro_apm: float | None = None
     micro_style: str | None = None
+    overall_score: float = 0.0
+    overall_grade: str = "B"
+    overall_rating: str = "B (75.0%)"
 
 
 class EconomyMultiLayer(BaseModel):

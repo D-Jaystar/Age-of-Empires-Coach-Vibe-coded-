@@ -627,6 +627,10 @@ def test_performance_scores_calculation() -> None:
     assert scores.eco_efficiency_score >= 85.0
     assert scores.military_value_score >= 80.0
     assert scores.total_military_units == 20
+    assert scores.overall_score >= 80.0
+    assert scores.overall_grade in ["S", "A", "B", "C", "D"]
+    assert "Overall Match Rating" not in scores.overall_rating  # check format like 'A (85.5% - Solid Competitive / 1200-1500 Elo)'
+    assert scores.overall_grade in scores.overall_rating
 
 
 # ===========================================================================

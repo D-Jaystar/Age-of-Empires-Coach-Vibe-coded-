@@ -190,6 +190,31 @@ def calculate_performance_scores(
         1,
     )
 
+    # -----------------------------------------------------------------------
+    # 4. Overall Match Rating & Performance Grade (0 - 100%)
+    # -----------------------------------------------------------------------
+    m_score = micro_score if micro_score is not None else 70.0
+    overall = round(
+        0.25 * tc_uptime_pct + 0.30 * eco_efficiency + 0.25 * military_value + 0.20 * m_score,
+        1,
+    )
+
+    if overall >= 90.0:
+        grade = "S"
+        rating = f"S ({overall}% - Top-Tier / 1600+ Elo Level)"
+    elif overall >= 80.0:
+        grade = "A"
+        rating = f"A ({overall}% - Solid Competitive / 1200-1500 Elo)"
+    elif overall >= 70.0:
+        grade = "B"
+        rating = f"B ({overall}% - Intermediate / 1000-1200 Elo)"
+    elif overall >= 60.0:
+        grade = "C"
+        rating = f"C ({overall}% - Developing / 800-1000 Elo)"
+    else:
+        grade = "D"
+        rating = f"D ({overall}% - Needs Fundamental Work / <800 Elo)"
+
     return PerformanceScores(
         tc_uptime_pct=tc_uptime_pct,
         tc_idle_pct=tc_idle_pct,
@@ -202,4 +227,7 @@ def calculate_performance_scores(
         micro_score=micro_score,
         micro_apm=micro_apm,
         micro_style=micro_style,
+        overall_score=overall,
+        overall_grade=grade,
+        overall_rating=rating,
     )

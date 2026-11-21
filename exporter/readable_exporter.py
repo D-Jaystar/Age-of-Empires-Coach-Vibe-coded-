@@ -118,6 +118,7 @@ def export_markdown(
             "",
             "| Metric | Score | Details |",
             "| :--- | :---: | :--- |",
+            f"| **Overall Performance Rating** | **{sc.overall_grade} ({sc.overall_score}%)** | {sc.overall_rating} |",
             f"| **Town Center Uptime (Dark Age)** | **{sc.tc_uptime_pct}%** | Total Idle: {tp.dark_age.total_idle_tc_s:.1f}s ({sc.tc_idle_pct}% idle) |",
             f"| **Economy Efficiency Score** | **{sc.eco_efficiency_score}%** | Benchmark based on TC consistency, farming engine, drop-off distance |",
             f"| **Military Value & Focus Score** | **{sc.military_value_score}%** | Total units: {sc.total_military_units} ({', '.join(f'{k}: {v}' for k, v in sc.military_by_age.items()) if sc.military_by_age else 'none'}) |",
