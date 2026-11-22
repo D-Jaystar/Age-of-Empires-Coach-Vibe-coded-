@@ -138,9 +138,12 @@ def export_markdown(
         f"- **Feudal Click Time:** {format_duration(da.feudal_click_s)} ({da.feudal_click_s or 'N/A'}s)",
         f"- **Feudal Arrival Time:** {format_duration(da.feudal_complete_s)} ({da.feudal_complete_s or 'N/A'}s)",
         f"- **Estimated Population at Click:** {da.estimated_vils_at_click or 'Unknown'} villagers",
-        f"- **Loom Researched:** {format_duration(da.loom_time_s)} ({'⚠️ Early Loom' if da.loom_early else 'Standard timing'})" if da.loom_time_s else "- **Loom Researched:** None",
+        f"- **Loom Researched:** {format_duration(da.loom_time_s)} ({'Early Loom - Boar safety insurance' if da.loom_early else 'Standard timing'})" if da.loom_time_s else "- **Loom Researched:** None",
         f"- **Total TC Idle Time:** **{da.total_idle_tc_s:.1f}s**",
     ])
+
+    if da.farms_built > 0:
+        md_lines.append(f"- **Farms Built:** {da.farms_built} (first farm at {format_duration(da.first_farm_time_s)})")
 
     if da.resource_gather_ratios:
         ratios_str = ", ".join(f"{res.capitalize()}: {int(val * 100)}%" for res, val in da.resource_gather_ratios.items())
@@ -175,9 +178,12 @@ def export_markdown(
             f"- **Castle Age Click Time:** {format_duration(fa.castle_click_s)} ({fa.castle_click_s or 'N/A'}s)",
             f"- **Castle Age Arrival:** {format_duration(fa.castle_complete_s)} ({fa.castle_complete_s or 'N/A'}s)",
             f"- **Early Gold Mined:** {'⚠️ Yes (inefficient for pure scouts)' if fa.early_gold_flag else 'No'}",
-            f"- **First Farm Built:** {format_duration(fa.first_farm_time_s)} | **Total Farms:** {fa.total_farms_built} ({fa.farm_build_rate or 0:.1f} farms/min)",
+            f"- **First Farm Built:** {format_duration(fa.first_farm_time_s)} | **Total Farms Before Castle:** {fa.total_farms_built} ({fa.farm_build_rate or 0:.1f} farms/min)",
             f"- **Wheelbarrow:** {format_duration(fa.wheelbarrow_time_s)} (at ~{fa.wheelbarrow_vil_count or 'N/A'} vils)" if fa.wheelbarrow_time_s else "- **Wheelbarrow:** Not researched in Feudal",
         ])
+        if fa.resource_gather_ratios:
+            fa_ratios_str = ", ".join(f"{res.capitalize()}: {int(val * 100)}%" for res, val in fa.resource_gather_ratios.items())
+            md_lines.append(f"- **Resource Distribution:** {fa_ratios_str}")
         if fa.tc_gather_point_description:
             md_lines.append(f"- **TC Gather Point:** {fa.tc_gather_point_description}")
         if fa.military_buildings:

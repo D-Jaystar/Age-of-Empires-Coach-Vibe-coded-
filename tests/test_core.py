@@ -460,6 +460,43 @@ def test_check_gather_distances_opening_sheep_shift_click_not_flagged() -> None:
     assert len(flags) == 0
 
 
+def test_check_gather_distances_boar_and_deer_lure() -> None:
+    events = [
+        # Boar clicked with 3 villagers 18 tiles away, brought under TC (2 tiles away) within 90s
+        {
+            "timestamp_s": 260.0,
+            "param": "Wild Boar",
+            "position_x": 68.0,
+            "position_y": 50.0,
+            "payload": {"object_ids": [1, 2, 3], "target_id": 5001},
+        },
+        {
+            "timestamp_s": 320.0,
+            "param": "Wild Boar",
+            "position_x": 51.5,
+            "position_y": 50.5,
+            "payload": {"object_ids": [1, 2, 3], "target_id": 5001},
+        },
+        # Deer clicked 14 tiles away, pushed and slaughtered under TC (1.5 tiles away)
+        {
+            "timestamp_s": 400.0,
+            "param": "Deer",
+            "position_x": 64.0,
+            "position_y": 50.0,
+            "payload": {"object_ids": [4], "target_id": 4001},
+        },
+        {
+            "timestamp_s": 500.0,
+            "param": "Deer",
+            "position_x": 50.5,
+            "position_y": 51.0,
+            "payload": {"object_ids": [4, 5], "target_id": 4001},
+        },
+    ]
+    flags = check_gather_distances(events, tc_x=50.0, tc_y=50.0)
+    assert len(flags) == 0
+
+
 def test_bulgarian_civ_tech_restrictions_in_prompt() -> None:
     from ai.prompt_builder import build_system_prompt
 

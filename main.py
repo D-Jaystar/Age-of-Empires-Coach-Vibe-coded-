@@ -262,6 +262,9 @@ def build_telemetry_report(
     feudal_up = p_uptimes.get("feudal")
     feudal_click_s = round(feudal_up - AoE2Constants.FEUDAL_AGE_RESEARCH_TIME_S, 1) if feudal_up else None
     idle_gaps, total_idle_tc = calculate_idle_tc_gaps(raw_inputs, feudal_click_s, game_duration_s)
+    d_first_farm, d_farms_built, _ = detect_farm_timing(raw_inputs, 0.0, feudal_up or game_duration_s)
+    dark_cutoff = feudal_click_s or feudal_up or game_duration_s
+    dark_ratios = calculate_resource_gather_ratios(raw_inputs, 0.0, dark_cutoff)
 
     dark_metrics = DarkAgeMetrics(
         feudal_click_s=feudal_click_s,
@@ -272,8 +275,10 @@ def build_telemetry_report(
         idle_tc_gaps=idle_gaps,
         total_idle_tc_s=total_idle_tc,
         build_order=extract_build_order(dark_events, max_entries=25),
-        resource_gather_ratios=calculate_resource_gather_ratios(dark_events, 0.0, feudal_up or game_duration_s),
-        tc_distance_flags=check_gather_distances(dark_events, player_info.tc_x, player_info.tc_y),
+        resource_gather_ratios=dark_ratios,
+        tc_distance_flags=check_gather_distances(raw_inputs, player_info.tc_x, player_info.tc_y, max_time_s=feudal_up or game_duration_s),
+        farms_built=d_farms_built,
+        first_farm_time_s=d_first_farm,
     )
 
     # 2. Feudal Age
@@ -283,7 +288,9 @@ def build_telemetry_report(
         c_click = round(castle_up - AoE2Constants.CASTLE_AGE_RESEARCH_TIME_S, 1) if castle_up else None
         feudal_events = events_by_age.get("Feudal Age", [])
         opening = detect_opening_strategy(feudal_events, dark_events)
-        f_farm, tot_farms, f_rate = detect_farm_timing(raw_inputs, feudal_up, castle_up or game_duration_s)
+        feudal_end = c_click or castle_up or game_duration_s
+        feudal_ratios = calculate_resource_gather_ratios(raw_inputs, feudal_up, feudal_end)
+        f_farm, tot_farms, f_rate = detect_farm_timing(raw_inputs, 0.0, castle_up or game_duration_s)
         wb_time, wb_vils = detect_wheelbarrow_timing(raw_inputs)
         feud_mil_count, feud_mil_lines = extract_military_units(raw_inputs, feudal_up, castle_up or game_duration_s)
 
@@ -301,6 +308,7 @@ def build_telemetry_report(
             military_buildings=count_military_buildings(raw_inputs, feudal_up, castle_up or game_duration_s),
             military_units_trained=feud_mil_count,
             unit_line_counts=feud_mil_lines,
+            resource_gather_ratios=feudal_ratios,
         )
 
     # 3. Castle & Imperial Age

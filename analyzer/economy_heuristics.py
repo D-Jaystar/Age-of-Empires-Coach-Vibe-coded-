@@ -240,6 +240,10 @@ def calculate_resource_gather_ratios(
         return default_ratios
 
     counts = {"food": 0, "wood": 0, "gold": 0, "stone": 0}
+    food_keywords = {"sheep", "boar", "deer", "forage", "berry", "farm", "mill", "cow", "turkey", "goose", "pig", "fish"}
+    wood_keywords = {"tree", "wood", "lumber camp", "forest"}
+    gold_keywords = {"gold", "mining camp"}
+    stone_keywords = {"stone"}
 
     for ev in events:
         t = float(ev.get("timestamp_s", 0.0))
@@ -250,26 +254,17 @@ def calculate_resource_gather_ratios(
 
         param = str(ev.get("param", "")).lower()
         inp_type = str(ev.get("type", "")).lower()
+        payload = ev.get("payload", {})
+        assigned_vils = len(payload.get("object_ids", [])) if payload.get("object_ids") else 1
 
-        # Food signals
-        food_keywords = {"sheep", "boar", "deer", "forage", "berry", "farm", "mill", "cow", "turkey", "goose", "pig"}
         if any(kw in param for kw in food_keywords) or "reseed" in inp_type:
-            counts["food"] += 1
-
-        # Wood signals
-        wood_keywords = {"tree", "wood", "lumber camp", "forest"}
-        if any(kw in param for kw in wood_keywords):
-            counts["wood"] += 1
-
-        # Gold signals
-        gold_keywords = {"gold", "mining camp"}
-        if any(kw in param for kw in gold_keywords):
-            counts["gold"] += 1
-
-        # Stone signals
-        stone_keywords = {"stone"}
-        if any(kw in param for kw in stone_keywords):
-            counts["stone"] += 1
+            counts["food"] += assigned_vils
+        elif any(kw in param for kw in wood_keywords):
+            counts["wood"] += assigned_vils
+        elif any(kw in param for kw in gold_keywords):
+            counts["gold"] += assigned_vils
+        elif any(kw in param for kw in stone_keywords):
+            counts["stone"] += assigned_vils
 
     total = sum(counts.values())
     if total == 0:

@@ -66,6 +66,8 @@ class DarkAgeMetrics(BaseModel):
     build_order: list[BuildOrderEntry] = Field(default_factory=list)
     resource_gather_ratios: dict[str, float] = Field(default_factory=dict)
     tc_distance_flags: list[str] = Field(default_factory=list)
+    farms_built: int = 0
+    first_farm_time_s: float | None = None
 
 
 class FeudalAgeMetrics(BaseModel):
@@ -83,6 +85,7 @@ class FeudalAgeMetrics(BaseModel):
     military_buildings: dict[str, int] = Field(default_factory=dict)
     military_units_trained: int = 0
     unit_line_counts: dict[str, int] = Field(default_factory=dict)
+    resource_gather_ratios: dict[str, float] = Field(default_factory=dict)
 
 
 class CastleAgeMetrics(BaseModel):
