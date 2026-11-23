@@ -34,6 +34,7 @@ from analyzer.military_heuristics import (
 )
 from analyzer.multi_layer_analyzer import build_multi_layer_analysis
 from analyzer.performance_scorer import calculate_performance_scores
+from analyzer.composition_advisor import generate_matchup_advice
 from analyzer.spatial_heuristics import (
     check_gather_distances,
     check_tc_gather_point,
@@ -598,6 +599,39 @@ def coach(
             )
             title = "📊 Wedstrijd Prestatie Scores"
         console.print(Panel(content, title=title, border_style="cyan"))
+
+
+@app.command()
+def advisor(
+    player: str = typer.Option("Franks", "--player", "-p", help="Your civilization (e.g. Franks, Britons, Byzantines)"),
+    opponent: str = typer.Option("Saracens", "--opponent", "-o", help="Opponent civilization (e.g. Saracens, Goths, Franks)"),
+    age: str = typer.Option("Castle Age", "--age", "-a", help="Current Age ('Feudal Age', 'Castle Age', 'Imperial Age')"),
+    open_overlay: bool = typer.Option(True, "--open/--no-open", help="Launch interactive hover overlay in browser"),
+) -> None:
+    """Real-Time Tactical Composition & Upgrade Advisor (English)."""
+    advice = generate_matchup_advice(player, opponent, current_age=age)
+
+    content = (
+        f"[bold gold1]⚔️ MATCHUP:[/bold gold1] [bold]{advice.player_civ}[/bold] vs [bold]{advice.opponent_civ}[/bold] ({advice.current_age})\n\n"
+        f"[bold yellow]⭐ Plan A (Power Win-Con):[/bold yellow] [bold]{advice.plan_a.name}[/bold]\n"
+        f"  • Frontline: {advice.plan_a.primary_unit} | Counter: {advice.plan_a.secondary_unit}\n"
+        f"  • Why: [dim]{advice.plan_a.rationale}[/dim]\n\n"
+        f"[bold green]🛡️ Plan B (Defensive/Trash):[/bold green] [bold]{advice.plan_b.name}[/bold]\n"
+        f"  • Frontline: {advice.plan_b.primary_unit} | Counter: {advice.plan_b.secondary_unit}\n"
+        f"  • Why: [dim]{advice.plan_b.rationale}[/dim]\n\n"
+        f"[bold red]⚠️ Missing Critical Upgrade:[/bold red] [bold red]{advice.missing_critical_upgrade or 'All core techs researched'}[/bold red]\n"
+        f"  • Impact: [dim]{advice.missing_upgrade_detail or 'Optimal army strength'}[/dim]\n\n"
+        f"[bold cyan]💡 Civ Tech Note:[/bold cyan] [dim]{advice.tech_restrictions}[/dim]"
+    )
+
+    console.print(Panel(content, title="⚔️ Tactical Composition & Counter Advisor", border_style="gold1"))
+
+    if open_overlay:
+        import webbrowser
+        overlay_path = Path("overlay/advisor_overlay.html").resolve()
+        if overlay_path.exists():
+            console.print(f"\n[green]Opening interactive HUD overlay in browser:[/green] [cyan]{overlay_path}[/cyan]")
+            webbrowser.open(overlay_path.as_uri())
 
 
 def main() -> None:

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AoE2 Real-Time Tactical Advisor</title>
+  <style>
+    :root {
+      --bg-glass: rgba(14, 18, 28, 0.88);
+      --bg-panel: rgba(20, 26, 42, 0.96);
+      --border-gold: rgba(212, 175, 55, 0.4);
+      --border-gold-glow: rgba(212, 175, 55, 0.85);
+      --text-gold: #f5d77f;
+      --text-cyan: #38bdf8;
+      --text-emerald: #34d399;
+      --text-amber: #fbbf24;
+      --text-rose: #f87171;
+      --text-slate: #94a3b8;
+      --text-light: #f1f5f9;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0f19;
+      background-image: 
+        radial-gradient(circle at 80% 20%, rgba(30, 58, 138, 0.18) 0%, transparent 40%),
+        radial-gradient(circle at 20% 80%, rgba(180, 83, 9, 0.12) 0%, transparent 40%);
+      color: var(--text-light);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+
+    .hero-banner {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 25px;
+    }
+
+    .hero-banner h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-gold);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .hero-banner p {
+      color: var(--text-slate);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Simulation Control Bar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--bg-panel);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 30px;
+      align-items: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .controls-bar label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-slate);
+      font-weight: 600;
+    }
+
+    .controls-bar select {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-light);
+      border: 1px solid var(--border-gold);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .controls-bar select:focus {
+      border-color: var(--text-gold);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* In-Game HUD Preview Frame */
+    .screen-preview {
+      width: 100%;
+      max-width: 1100px;
+      height: 520px;
+      border-radius: 14px;
+      background: #060911 url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      position: relative;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: visible;
+    }
+
+    .screen-watermark {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.65);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-slate);
+      backdrop-filter: blur(4px);
+    }
+
+    /* =======================================================
+       TOP-RIGHT MINI OVERLAY WIDGET
+       ======================================================= */
+    .tactical-advisor-widget {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-gold);
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 320px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      user-select: none;
+    }
+
+    .tactical-advisor-widget:hover {
+      border-color: var(--border-gold-glow);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+
+    /* Header Row */
+    .advisor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+
+    .advisor-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-gold);
+      text-transform: uppercase;
+    }
+
+    .civ-matchup-pill {
+      font-size: 11px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--text-cyan);
+      font-weight: 600;
+      cursor: help;
+      position: relative;
+    }
+
+    /* Compact Composition Badges */
+    .composition-pills-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .combo-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(25, 33, 52, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .combo-pill:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: var(--text-cyan);
+      transform: translateX(-2px);
+    }
+
+    .combo-pill.plan-a {
+      border-left: 3px solid var(--text-gold);
+    }
+
+    .combo-pill.plan-b {
+      border-left: 3px solid var(--text-emerald);
+    }
+
+    .combo-label {
+      font-weight: 600;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .combo-tag {
+      font-size: 10px;
+      color: var(--text-slate);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    /* Missing Upgrade Alert Bar */
+    .missing-upgrade-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text-rose);
+      font-weight: 600;
+      cursor: help;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .missing-upgrade-bar:hover {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: var(--text-rose);
+    }
+
+    .pulse-icon {
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
+    }
+
+    /* =======================================================
+       RICH HOVER TOOLTIP CARDS
+       ======================================================= */
+    .rich-tooltip {
+      position: absolute;
+      top: 0;
+      right: 335px;
+      width: 380px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-gold);
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(10px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    /* Hover trigger triggers */
+    .has-tooltip:hover .rich-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .tooltip-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-gold);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 6px;
+    }
+
+    .tooltip-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .badge-primary { background: rgba(212, 175, 55, 0.2); color: var(--text-gold); }
+    .badge-counter { background: rgba(52, 211, 153, 0.2); color: var(--text-emerald); }
+    .badge-warning { background: rgba(239, 68, 68, 0.2); color: var(--text-rose); }
+
+    .tooltip-body {
+      font-size: 12px;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    .tooltip-section {
+      margin-top: 10px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .unit-breakdown-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .unit-item {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 5px 8px;
+      border-radius: 4px;
+      border-left: 2px solid var(--text-cyan);
+      font-size: 11px;
+    }
+
+    .upgrade-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .upgrade-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 6px 8px;
+      border-radius: 5px;
+    }
+
+    .upgrade-item.researched {
+      opacity: 0.65;
+    }
+
+    .upgrade-item.missing {
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .check-icon {
+      font-weight: bold;
+    }
+    .check-done { color: var(--text-emerald); }
+    .check-miss { color: var(--text-rose); }
+
+    .eco-ratios-pills {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .eco-pill {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .eco-food { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .eco-gold { background: rgba(212, 175, 55, 0.25); color: #fde047; }
+    .eco-wood { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+
+    .help-hint {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-slate);
+      margin-top: 8px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-banner">
+    <h1>⚔️ AoE2 Real-Time Tactical Composition Advisor</h1>
+    <p>Compact top-right in-game HUD overlay concept. Shows your core compositions and missing upgrades at a glance—hover over any item to reveal full tactical counters and upgrade prioritization.</p>
+  </div>
+
+  <!-- Interactive Civ Matchup Controls -->
+  <div class="controls-bar">
+    <div>
+      <label for="playerCiv">Your Civ:</label>
+      <select id="playerCiv" onchange="updateAdvisor()">
+        <option value="Franks" selected>Franks (Cavalry)</option>
+        <option value="Britons">Britons (Archers)</option>
+        <option value="Ethiopians">Ethiopians (Archers)</option>
+        <option value="Byzantines">Byzantines (Defensive/Trash)</option>
+        <option value="Magyars">Magyars (Cavalry/Cav Archer)</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="opponentCiv">Opponent Civ:</label>
+      <select id="opponentCiv" onchange="updateAdvisor()">
+        <option value="Saracens" selected>Saracens (Camels & Mamelukes)</option>
+        <option value="Goths">Goths (Infantry Spam & Huskarla)</option>
+        <option value="Franks">Franks (Heavy Knights & Paladins)</option>
+        <option value="Britons">Britons (Long-Range Crossbows)</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="currentAge">Current Age:</label>
+      <select id="currentAge" onchange="updateAdvisor()">
+        <option value="Castle Age" selected>Castle Age</option>
+        <option value="Imperial Age">Imperial Age</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- In-game Screen Mockup -->
+  <div class="screen-preview">
+    <div class="screen-watermark">Age of Empires II: Definitive Edition — Active Match Simulation</div>
+
+    <!-- Top-Right Tactical Advisor HUD Widget -->
+    <div class="tactical-advisor-widget" id="advisorWidget">
+      
+      <!-- Header -->
+      <div class="advisor-header">
+        <div class="advisor-title">⚔️ Counter Advisor</div>
+        <div class="civ-matchup-pill has-tooltip" id="matchupPill">
+          <span id="matchupText">Franks vs Saracens</span>
+          <!-- Civ Perks Tooltip -->
+          <div class="rich-tooltip">
+            <div class="tooltip-header">
+              <span id="civTitle">Franks Civ Synergies</span>
+              <span class="tooltip-badge badge-primary">Civ Trait</span>
+            </div>
+            <div class="tooltip-body">
+              <div class="tooltip-section">
+                <div class="section-title">✨ Key Bonuses</div>
+                <div id="civBonusesList">• Farm upgrades are FREE upon aging up.<br>• Cavalry have +20% HP starting in Feudal Age.<br>• Foragers gather 15% faster.</div>
+              </div>
+              <div class="tooltip-section">
+                <div class="section-title">⚠️ Tech Restrictions</div>
+                <div id="civRestrictions" style="color: var(--text-amber);">NO Bloodlines (compensated by +20% HP); NO Arbalester; NO Bracer.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Composition Pills (Plan A & Plan B) -->
+      <div class="composition-pills-container">
+        
+        <!-- Plan A Pill -->
+        <div class="combo-pill plan-a has-tooltip" id="pillPlanA">
+          <div class="combo-label">
+            <span>⭐ Plan A:</span>
+            <span id="labelPlanA">Cavalier + Axeman</span>
+          </div>
+          <span class="combo-tag" id="tagPlanA">Power Win-Con</span>
+
+          <!-- Plan A Rich Tooltip -->
+          <div class="rich-tooltip">
+            <div class="tooltip-header">
+              <span id="planATitle">Cavalier + Throwing Axeman</span>
+              <span class="tooltip-badge badge-primary">Primary Combo</span>
+            </div>
+            <div class="tooltip-body">
+              <div id="planARationale">
+                Against Saracens' Camels and heavy Halberdiers, pure Knights will trade inefficiently. 
+                Throwing Axemen deal ranged melee damage that melts Pikes and Camels before they touch your Knights.
+              </div>
+              <div class="tooltip-section">
+                <div class="section-title">Unit Composition Breakdown</div>
+                <div class="unit-breakdown-grid">
+                  <div class="unit-item" id="planAPrimary"><strong>Frontline:</strong> Knight / Cavalier</div>
+                  <div class="unit-item" id="planASecondary"><strong>Counter:</strong> Throwing Axeman</div>
+                  <div class="unit-item" id="planASiege"><strong>Siege:</strong> Battering Ram</div>
+                  <div class="unit-item"><strong>Objective:</strong> Castle push</div>
+                </div>
+              </div>
+              <div class="eco-ratios-pills">
+                <span class="eco-pill eco-food">🥩 Food: High</span>
+                <span class="eco-pill eco-gold">🪙 Gold: High</span>
+                <span class="eco-pill eco-wood">🪵 Wood: Low</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plan B Pill -->
+        <div class="combo-pill plan-b has-tooltip" id="pillPlanB">
+          <div class="combo-label">
+            <span>🛡️ Plan B:</span>
+            <span id="labelPlanB">Pikeman + Skirm + Monk</span>
+          </div>
+          <span class="combo-tag" id="tagPlanB">Trash Counter</span>
+
+          <!-- Plan B Rich Tooltip -->
+          <div class="rich-tooltip">
+            <div class="tooltip-header">
+              <span id="planBTitle">Pikeman + Elite Skirmisher + Monk</span>
+              <span class="tooltip-badge badge-counter">Defensive Counter</span>
+            </div>
+            <div class="tooltip-body">
+              <div id="planBRationale">
+                Cost-effective defensive counter. Preserves gold while converting high-value enemy units (Mamelukes/Camels) 
+                and soaking arrows with cheap Skirmishers.
+              </div>
+              <div class="tooltip-section">
+                <div class="section-title">Unit Composition Breakdown</div>
+                <div class="unit-breakdown-grid">
+                  <div class="unit-item" id="planBPrimary"><strong>Frontline:</strong> Pikeman</div>
+                  <div class="unit-item" id="planBSecondary"><strong>Anti-Archer:</strong> Elite Skirmisher</div>
+                  <div class="unit-item" id="planBSiege"><strong>Support:</strong> Monk (Conversions)</div>
+                  <div class="unit-item"><strong>Siege:</strong> Mangonel</div>
+                </div>
+              </div>
+              <div class="eco-ratios-pills">
+                <span class="eco-pill eco-wood">🪵 Wood: High</span>
+                <span class="eco-pill eco-food">🥩 Food: High</span>
+                <span class="eco-pill eco-gold">🪙 Gold: Zero</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Missing Upgrade Alert -->
+      <div class="missing-upgrade-bar has-tooltip" id="missingUpgradeBar">
+        <span class="pulse-icon">⚠️</span>
+        <span id="missingUpgradeText">Missing: Chain Barding Armor (+1/+1)</span>
+
+        <!-- Missing Upgrade Rich Tooltip -->
+        <div class="rich-tooltip">
+          <div class="tooltip-header">
+            <span>Critical Upgrade Roadmap</span>
+            <span class="tooltip-badge badge-warning">Blacksmith & Techs</span>
+          </div>
+          <div class="tooltip-body">
+            <p id="missingUpgradeExplanation" style="margin-bottom: 8px;">
+              Without <strong>Chain Barding Armor</strong>, your Knights take +2 pierce damage per arrow from Castle Age Crossbows and Town Centers, losing 40%+ of their survivability.
+            </p>
+            <div class="section-title">Priority Roadmap</div>
+            <ul class="upgrade-list" id="upgradeList">
+              <li class="upgrade-item researched">
+                <span class="check-icon check-done">✓</span>
+                <div><strong>Scale Barding Armor</strong> (Feudal) - +1/+1 Cav Armor [Researched]</div>
+              </li>
+              <li class="upgrade-item missing">
+                <span class="check-icon check-miss">✕</span>
+                <div><strong>Chain Barding Armor</strong> (Castle) - +1/+1 Cav Armor <span style="color:var(--text-rose);font-weight:bold;">[MISSING - PRIORITY 1]</span></div>
+              </li>
+              <li class="upgrade-item">
+                <span class="check-icon" style="color:var(--text-slate)">○</span>
+                <div><strong>Iron Casting</strong> (Castle) - +1 Melee Attack</div>
+              </li>
+              <li class="upgrade-item">
+                <span class="check-icon" style="color:var(--text-slate)">○</span>
+                <div><strong>Husbandry</strong> (Stable) - +10% Cavalry Movement Speed</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-hint">💡 Hover over combos or upgrades for tactical depth</div>
+
+    </div>
+  </div>
+
+  <script>
+    // Data definitions for the interactive prototype
+    const MATCHUP_PRESETS = {
+      "Franks": {
+        bonuses: "• Farm upgrades FREE upon aging up.<br>• Cavalry +20% HP starting in Feudal.<br>• Foragers gather 15% faster.<br>• Castles cost -25%.",
+        restrictions: "NO Bloodlines needed (+20% HP compensation); NO Arbalester; NO Bracer; NO Siege Ram.",
+        counters: {
+          "Saracens": {
+            planA: {
+              name: "Cavalier + Axeman",
+              title: "Cavalier + Throwing Axeman",
+              rationale: "Against Saracens' Camels and heavy Halberdiers, pure Knights will trade inefficiently. Throwing Axemen deal ranged melee damage that melts Pikes and Camels before they touch your Knights.",
+              primary: "Knight / Cavalier",
+              secondary: "Throwing Axeman",
+              siege: "Battering Ram / Trebuchet"
+            },
+            planB: {
+              name: "Pike + Skirm + Monk",
+              title: "Pikeman + Elite Skirmisher + Monk",
+              rationale: "Preserves gold against Saracens. Convert high-value Mamelukes and Camels with Monks while trash units soak damage.",
+              primary: "Pikeman",
+              secondary: "Elite Skirmisher",
+              siege: "Mangonel"
+            },
+            missingUpgrade: "Missing: Chain Barding Armor (+1/+1)",
+            missingDetail: "Without Chain Barding Armor, your Knights take +2 pierce damage per arrow from Crossbows and TCs.",
+            upgrades: [
+              { name: "Scale Barding Armor", age: "Feudal", done: true },
+              { name: "Chain Barding Armor", age: "Castle", done: false, critical: true },
+              { name: "Iron Casting", age: "Castle", done: false },
+              { name: "Husbandry", age: "Castle", done: false }
+            ]
+          },
+          "Goths": {
+            planA: {
+              name: "Paladin + Hand Cannon",
+              title: "Knight line + Hand Cannoneer / Axeman",
+              rationale: "Goths flood cheap Infantry and Huskarls. Heavy Cavalry crushes their frontline, while Hand Cannoneers or Axemen shred Halberdiers.",
+              primary: "Cavalier / Paladin",
+              secondary: "Hand Cannoneer / Axeman",
+              siege: "Heavy Scorpion",
+            },
+            planB: {
+              name: "Champion + Axeman",
+              title: "Throwing Axeman + Champion Wall",
+              rationale: "Infantry mirror defense. Axemen strike Huskarls with melee damage, bypassing high pierce armor.",
+              primary: "Throwing Axeman",
+              secondary: "Champion",
+              siege: "Mangonel"
+            },
+            missingUpgrade: "Missing: Plate Barding Armor (+1/+2)",
+            missingDetail: "Maximizes armor to prevent Goth infantry spam from whittling down your cavalry.",
+            upgrades: [
+              { name: "Chain Barding Armor", age: "Castle", done: true },
+              { name: "Plate Barding Armor", age: "Imperial", done: false, critical: true },
+              { name: "Blast Furnace", age: "Imperial", done: false }
+            ]
+          }
+        }
+      },
+      "Britons": {
+        bonuses: "• Foot archers +1 range in Castle, +1 in Imperial (+2 total).<br>• Town Centers cost -50% wood starting in Castle Age.<br>• Shepherds work 25% faster.",
+        restrictions: "NO Bloodlines; NO Thumb Ring; NO Paladin; NO Siege Ram.",
+        counters: {
+          "Franks": {
+            planA: {
+              name: "Arbalester + Halberdier",
+              title: "Arbalester + Halberdier Meatshield",
+              rationale: "Franks have +20% HP cavalry. Massed Halberdiers block enemy Knights, allowing your 8+2 range Arbalesters to melt them with focus-fire.",
+              primary: "Crossbow / Arbalester",
+              secondary: "Halberdier / Pikeman",
+              siege: "Trebuchet (outranges castles)"
+            },
+            planB: {
+              name: "Longbowman + Light Cav",
+              title: "Longbowman + Light Cavalry Raid",
+              rationale: "Longbowmen outrange enemy fortifications and onagers. Light Cav controls map relics and snipes enemy Skirmishers.",
+              primary: "Longbowman",
+              secondary: "Light Cavalry",
+              siege: "Battering Ram"
+            },
+            missingUpgrade: "Missing: Bodkin Arrow (+1 Range & Atk)",
+            missingDetail: "Essential #1 priority for Britons: grants +1 range and +1 attack to all archers.",
+            upgrades: [
+              { name: "Fletching", age: "Feudal", done: true },
+              { name: "Bodkin Arrow", age: "Castle", done: false, critical: true },
+              { name: "Ballistics", age: "Castle", done: false, critical: true },
+              { name: "Leather Archer Armor", age: "Castle", done: false }
+            ]
+          }
+        }
+      },
+      "Byzantines": {
+        bonuses: "• Buildings have +10% to +40% HP.<br>• Camels, Skirmishers, and Spearmen lines cost -25%.<br>• Advancing to Imperial Age costs -33%.",
+        restrictions: "NO Bloodlines; NO Blast Furnace; NO Siege Engineers; NO Parthian Tactics.",
+        counters: {
+          "Franks": {
+            planA: {
+              name: "Cataphract + Cheap Camels",
+              title: "Cataphract + Discounted Camels (-25%)",
+              rationale: "Cheap Camels completely counter Frank Knights on equal resources, while Cataphracts eliminate any infantry transitions.",
+              primary: "Camel Rider (-25% cost)",
+              secondary: "Cataphract",
+              siege: "Bombard Cannon"
+            },
+            planB: {
+              name: "Pikeman + Cheap Skirm",
+              title: "Full Trash Wall (Pike -25% + Skirm -25%)",
+              rationale: "The ultimate resource-bleed composition. Completely shuts down Frank gold armies at a fraction of the cost.",
+              primary: "Pikeman (-25%)",
+              secondary: "Elite Skirmisher (-25%)",
+              siege: "Trebuchet"
+            },
+            missingUpgrade: "Missing: Scale Barding Armor (+1/+1)",
+            missingDetail: "Essential for Camels and Cataphracts before taking open-field cavalry engagements.",
+            upgrades: [
+              { name: "Forging", age: "Feudal", done: true },
+              { name: "Scale Barding Armor", age: "Feudal", done: false, critical: true },
+              { name: "Chain Barding Armor", age: "Castle", done: false }
+            ]
+          }
+        }
+      }
+    };
+
+    function updateAdvisor() {
+      const pCiv = document.getElementById("playerCiv").value;
+      const oCiv = document.getElementById("opponentCiv").value;
+      const age = document.getElementById("currentAge").value;
+
+      document.getElementById("matchupText").innerText = `${pCiv} vs ${oCiv}`;
+      document.getElementById("civTitle").innerText = `${pCiv} Civ Synergies`;
+
+      const pData = MATCHUP_PRESETS[pCiv] || MATCHUP_PRESETS["Franks"];
+      document.getElementById("civBonusesList").innerHTML = pData.bonuses;
+      document.getElementById("civRestrictions").innerHTML = pData.restrictions;
+
+      const matchData = (pData.counters && pData.counters[oCiv]) || (pData.counters && Object.values(pData.counters)[0]) || MATCHUP_PRESETS["Franks"].counters["Saracens"];
+
+      // Plan A
+      document.getElementById("labelPlanA").innerText = matchData.planA.name;
+      document.getElementById("planATitle").innerText = matchData.planA.title;
+      document.getElementById("planARationale").innerText = matchData.planA.rationale;
+      document.getElementById("planAPrimary").innerHTML = `<strong>Frontline:</strong> ${matchData.planA.primary}`;
+      document.getElementById("planASecondary").innerHTML = `<strong>Counter:</strong> ${matchData.planA.secondary}`;
+      document.getElementById("planASiege").innerHTML = `<strong>Siege:</strong> ${matchData.planA.siege}`;
+
+      // Plan B
+      document.getElementById("labelPlanB").innerText = matchData.planB.name;
+      document.getElementById("planBTitle").innerText = matchData.planB.title;
+      document.getElementById("planBRationale").innerText = matchData.planB.rationale;
+      document.getElementById("planBPrimary").innerHTML = `<strong>Frontline:</strong> ${matchData.planB.primary}`;
+      document.getElementById("planBSecondary").innerHTML = `<strong>Counter:</strong> ${matchData.planB.secondary}`;
+      document.getElementById("planBSiege").innerHTML = `<strong>Siege:</strong> ${matchData.planB.siege}`;
+
+      // Missing Upgrade
+      document.getElementById("missingUpgradeText").innerText = matchData.missingUpgrade;
+      document.getElementById("missingUpgradeExplanation").innerText = matchData.missingDetail;
+
+      // Upgrade list
+      const ul = document.getElementById("upgradeList");
+      ul.innerHTML = "";
+      matchData.upgrades.forEach(u => {
+        const li = document.createElement("li");
+        li.className = `upgrade-item ${u.done ? 'researched' : (u.critical ? 'missing' : '')}`;
+        const icon = u.done ? '<span class="check-icon check-done">✓</span>' : (u.critical ? '<span class="check-icon check-miss">✕</span>' : '<span class="check-icon" style="color:var(--text-slate)">○</span>');
+        const tag = u.done ? '[Researched]' : (u.critical ? '<span style="color:var(--text-rose);font-weight:bold;">[MISSING - PRIORITY]</span>' : '[Pending]');
+        li.innerHTML = `${icon}<div><strong>${u.name}</strong> (${u.age}) ${tag}</div>`;
+        ul.appendChild(li);
+      });
+    }
+
+    // Initialize
+    updateAdvisor();
+  </script>
+</body>
+</html>
